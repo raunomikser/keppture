@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { buildScene, create, parseSkp } from 'openskp';
+import type { GlbPrimitive, SkpScene } from 'openskp';
 
 export interface SkpMeshPrimitive {
   name: string;
@@ -12,6 +14,12 @@ export interface SkpMeshPrimitive {
   roughness: number;
   metalness: number;
   hasCheckerTexture?: boolean;
+  /** Base64 PNG/JPEG image used by the original SketchUp material. */
+  textureData?: string;
+  textureMimeType?: 'image/png' | 'image/jpeg';
+  textureName?: string;
+  alphaMode?: 'OPAQUE' | 'MASK' | 'BLEND';
+  doubleSided?: boolean;
 }
 
 export interface SkpGroupNode {
@@ -51,361 +59,184 @@ export function getAllSkpModels(): SkpParsedModel[] {
   return Array.from(skpRegistry.values());
 }
 
-/**
- * Helper to create a clean Box mesh primitive with accurate normals and UV coordinates.
- */
-function createBoxPrimitive(
-  name: string,
-  sx: number,
-  sy: number,
-  sz: number,
-  colorHex: string,
-  metalness = 0.25,
-  roughness = 0.55,
-  hasCheckerTexture = false,
-): SkpMeshPrimitive {
-  const geo = new THREE.BoxGeometry(sx, sy, sz);
-  const posAttr = geo.getAttribute('position') as THREE.BufferAttribute;
-  const normAttr = geo.getAttribute('normal') as THREE.BufferAttribute;
-  const uvAttr = geo.getAttribute('uv') as THREE.BufferAttribute;
-  const idxAttr = geo.getIndex();
+const IDENTITY_MATRIX = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
-  const primitive: SkpMeshPrimitive = {
-    name,
-    positions: new Float32Array(posAttr.array),
-    normals: new Float32Array(normAttr.array),
-    uvs: new Float32Array(uvAttr.array),
-    indices: idxAttr ? new Uint32Array(idxAttr.array) : undefined,
-    colorHex,
-    opacity: 1,
-    roughness,
-    metalness,
-    hasCheckerTexture,
+interface GltfMaterialLike {
+  pbrMetallicRoughness?: {
+    baseColorFactor?: number[];
+    baseColorTexture?: { index?: number };
+    metallicFactor?: number;
+    roughnessFactor?: number;
   };
-  geo.dispose();
-  return primitive;
+  alphaMode?: 'OPAQUE' | 'MASK' | 'BLEND';
+  doubleSided?: boolean;
 }
 
-function createCylinderPrimitive(
-  name: string,
-  rt: number,
-  rb: number,
-  h: number,
-  colorHex: string,
-  metalness = 0.65,
-  roughness = 0.3,
-): SkpMeshPrimitive {
-  const geo = new THREE.CylinderGeometry(rt, rb, h, 16);
-  const posAttr = geo.getAttribute('position') as THREE.BufferAttribute;
-  const normAttr = geo.getAttribute('normal') as THREE.BufferAttribute;
-  const uvAttr = geo.getAttribute('uv') as THREE.BufferAttribute;
-  const idxAttr = geo.getIndex();
+function linearColorToHex(factor: readonly number[] | undefined): string {
+  if (!factor || factor.length < 3) return '#808080';
+  const color = new THREE.Color().setRGB(
+    THREE.MathUtils.clamp(factor[0], 0, 1),
+    THREE.MathUtils.clamp(factor[1], 0, 1),
+    THREE.MathUtils.clamp(factor[2], 0, 1),
+    THREE.LinearSRGBColorSpace,
+  );
+  return `#${color.getHexString()}`;
+}
 
-  const primitive: SkpMeshPrimitive = {
-    name,
-    positions: new Float32Array(posAttr.array),
-    normals: new Float32Array(normAttr.array),
-    uvs: new Float32Array(uvAttr.array),
-    indices: idxAttr ? new Uint32Array(idxAttr.array) : undefined,
-    colorHex,
-    opacity: 1,
-    roughness,
-    metalness,
+function materialProperties(
+  scene: SkpScene,
+  primitive: GlbPrimitive,
+): Pick<
+  SkpMeshPrimitive,
+  | 'colorHex'
+  | 'opacity'
+  | 'roughness'
+  | 'metalness'
+  | 'textureData'
+  | 'textureMimeType'
+  | 'textureName'
+  | 'alphaMode'
+  | 'doubleSided'
+> {
+  const material = scene.gltfMaterials[primitive.materialIndex] as GltfMaterialLike | undefined;
+  const pbr = material?.pbrMetallicRoughness;
+  const opacity = pbr?.baseColorFactor?.[3] ?? 1;
+  const alphaMode =
+    material?.alphaMode === 'MASK' || material?.alphaMode === 'BLEND' ? material.alphaMode : 'OPAQUE';
+
+  let textureData: string | undefined;
+  let textureMimeType: 'image/png' | 'image/jpeg' | undefined;
+  let textureName: string | undefined;
+  const textureIndex = pbr?.baseColorTexture?.index;
+  const texture = typeof textureIndex === 'number' ? scene.textures[textureIndex] : undefined;
+  if (
+    texture &&
+    (texture.mimeType === 'image/png' || texture.mimeType === 'image/jpeg') &&
+    texture.data?.length
+  ) {
+    textureData = bytesToBase64(texture.data);
+    textureMimeType = texture.mimeType;
+    textureName = texture.filename;
+  }
+
+  return {
+    colorHex: linearColorToHex(pbr?.baseColorFactor),
+    opacity,
+    roughness: pbr?.roughnessFactor ?? 0.8,
+    metalness: pbr?.metallicFactor ?? 0,
+    textureData,
+    textureMimeType,
+    textureName,
+    alphaMode,
+    doubleSided: material?.doubleSided === true,
   };
-  geo.dispose();
-  return primitive;
 }
 
-function makeTransformMatrix(
-  tx: number,
-  ty: number,
-  tz: number,
-  rx = 0,
-  ry = 0,
-  rz = 0,
-  sx = 1,
-  sy = 1,
-  sz = 1,
-): number[] {
-  const m = new THREE.Matrix4();
-  const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, ry, rz));
-  m.compose(new THREE.Vector3(tx, ty, tz), q, new THREE.Vector3(sx, sy, sz));
-  return Array.from(m.elements);
+function collectStats(node: SkpGroupNode): { vertices: number; faces: number } {
+  let vertices = 0;
+  let faces = 0;
+  for (const prim of node.primitives) {
+    vertices += prim.positions.length / 3;
+    faces += prim.indices ? prim.indices.length / 3 : prim.positions.length / 9;
+  }
+  for (const child of node.children) {
+    const childStats = collectStats(child);
+    vertices += childStats.vertices;
+    faces += childStats.faces;
+  }
+  return { vertices, faces };
 }
 
-/**
- * Scan binary buffer for SketchUp UTF-16LE header & printable UTF-16LE component/group names.
- */
-function inspectSketchUpBinaryHeader(bytes: Uint8Array): {
-  isSketchUpHeader: boolean;
-  isOle2: boolean;
-  version: string;
-  extractedStrings: string[];
-} {
-  // Check UTF-16LE BOM + "SketchUp Model" signature
-  const dec16 = new TextDecoder('utf-16le', { fatal: false });
-  const headText = dec16.decode(bytes.subarray(0, Math.min(256, bytes.length)));
-  const isSketchUpHeader = headText.includes('SketchUp Model');
+/** Parse a real SketchUp .skp archive with openskp's native binary reader. */
+export async function parseSketchUpBytes(bytes: Uint8Array, fileName: string): Promise<SkpParsedModel> {
+  const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 
-  const isOle2 =
-    bytes.length >= 8 &&
-    bytes[0] === 0xd0 &&
-    bytes[1] === 0xcf &&
-    bytes[2] === 0x11 &&
-    bytes[3] === 0xe0;
-
-  let version = 'SketchUp 2024 Binary';
-  const verMatch = headText.match(/\{([0-9]+\.[0-9]+[^}]*)\}/);
-  if (verMatch) {
-    version = `SketchUp v${verMatch[1]}`;
-  } else if (isOle2) {
-    version = 'SketchUp OLE2/CFBF';
-  }
-
-  // Extract ASCII/UTF-16LE identifiers (component names like CComponentDefinition, Truss, Stage, etc.)
-  const extractedStrings: string[] = [];
-  const asciiDec = new TextDecoder('ascii', { fatal: false });
-  const asciiSample = asciiDec.decode(bytes.subarray(0, Math.min(bytes.length, 262144)));
-  const matches = asciiSample.match(/C[A-Z][A-Za-z0-9_]{3,28}/g);
-  if (matches) {
-    for (const m of matches) {
-      if (!extractedStrings.includes(m) && extractedStrings.length < 24) {
-        extractedStrings.push(m);
-      }
-    }
-  }
-
-  return { isSketchUpHeader, isOle2, version, extractedStrings };
-}
-
-/**
- * Check for embedded structured SKP JSON/Binary scene payload ("CAPSKP1\0")
- * appended inside valid SketchUp-header .skp archives.
- */
-function tryParseEmbeddedSkpScene(bytes: Uint8Array, fileName: string, version: string): SkpParsedModel | null {
-  const marker = 'CAPSKP1:';
-  const markerBytes = new TextEncoder().encode(marker);
-  let foundOffset = -1;
-  for (let i = 0; i <= bytes.length - markerBytes.length; i++) {
-    let match = true;
-    for (let j = 0; j < markerBytes.length; j++) {
-      if (bytes[i + j] !== markerBytes[j]) {
-        match = false;
-        break;
-      }
-    }
-    if (match) {
-      foundOffset = i + markerBytes.length;
-      break;
-    }
-  }
-  if (foundOffset < 0) return null;
-
+  let sketchUpVersion = 'SketchUp';
   try {
-    const jsonStr = new TextDecoder('utf-8').decode(bytes.subarray(foundOffset));
-    const parsed = JSON.parse(jsonStr) as {
-      sketchUpVersion?: string;
-      rootNode: {
-        id: string;
-        name: string;
-        isComponentInstance: boolean;
-        matrix: number[];
-        primitives: Array<{
-          name: string;
-          positions: number[];
-          normals: number[];
-          uvs: number[];
-          indices?: number[];
-          colorHex: string;
-          opacity: number;
-          roughness: number;
-          metalness: number;
-          hasCheckerTexture?: boolean;
-        }>;
-        children: unknown[];
-      };
-    };
-
-    let componentCount = 0;
-    let vertexCount = 0;
-    let faceCount = 0;
-
-    const hydrateNode = (raw: typeof parsed.rootNode): SkpGroupNode => {
-      componentCount++;
-      const primitives: SkpMeshPrimitive[] = (raw.primitives || []).map((p) => {
-        const pos = new Float32Array(p.positions);
-        vertexCount += pos.length / 3;
-        faceCount += p.indices ? p.indices.length / 3 : pos.length / 9;
-        return {
-          name: p.name,
-          positions: pos,
-          normals: new Float32Array(p.normals),
-          uvs: new Float32Array(p.uvs),
-          indices: p.indices ? new Uint32Array(p.indices) : undefined,
-          colorHex: p.colorHex,
-          opacity: p.opacity ?? 1,
-          roughness: p.roughness ?? 0.5,
-          metalness: p.metalness ?? 0.25,
-          hasCheckerTexture: p.hasCheckerTexture,
-        };
-      });
-      const children = ((raw.children || []) as Array<typeof parsed.rootNode>).map(hydrateNode);
-      return {
-        id: raw.id,
-        name: raw.name,
-        isComponentInstance: Boolean(raw.isComponentInstance),
-        matrix: raw.matrix,
-        primitives,
-        children,
-      };
-    };
-
-    const rootNode = hydrateNode(parsed.rootNode);
-    return {
-      id: `skp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      fileName,
-      format: 'skp',
-      sketchUpVersion: parsed.sketchUpVersion || version,
-      componentCount,
-      vertexCount,
-      faceCount,
-      rootNode,
-      createdAt: Date.now(),
-    };
+    const rawVersion = (parseSkp(buffer) as unknown as { version?: unknown }).version;
+    if (typeof rawVersion === 'string' && rawVersion.trim()) {
+      sketchUpVersion = rawVersion.startsWith('{') ? `SketchUp ${rawVersion}` : `SketchUp ${rawVersion}`;
+    }
   } catch {
-    return null;
-  }
-}
-
-/**
- * Reconstruct hierarchical 3D SketchUp model from binary .skp geometry blocks
- * or extracted component records.
- */
-function parseBinarySketchUpModel(bytes: Uint8Array, fileName: string): SkpParsedModel {
-  const header = inspectSketchUpBinaryHeader(bytes);
-  if (!header.isSketchUpHeader && !header.isOle2 && !fileName.toLowerCase().endsWith('.skp')) {
-    throw new Error(`File "${fileName}" is not a valid SketchUp (.skp) binary archive.`);
+    // buildScene below reports the real parsing error with more context.
   }
 
-  // Check if file carries high-fidelity binary-embedded SketchUp component tree
-  const embedded = tryParseEmbeddedSkpScene(bytes, fileName, header.version);
-  if (embedded) {
-    return embedded;
+  let scene: SkpScene;
+  try {
+    scene = buildScene(buffer);
+  } catch (err) {
+    throw new Error(
+      `Could not read SketchUp file "${fileName}": ${err instanceof Error ? err.message : String(err)}`,
+    );
   }
 
-  // Scan binary stream for plausible float64 IEEE-754 vertex coordinates (within +/- 50m stage bounds)
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  const sampledPoints: Array<[number, number, number]> = [];
-  for (let offset = 64; offset + 24 <= bytes.length; offset += 8) {
-    const x = view.getFloat64(offset, true);
-    const y = view.getFloat64(offset + 8, true);
-    const z = view.getFloat64(offset + 16, true);
-    if (
-      Number.isFinite(x) &&
-      Number.isFinite(y) &&
-      Number.isFinite(z) &&
-      Math.abs(x) > 0.005 &&
-      Math.abs(x) < 40 &&
-      Math.abs(y) > 0.005 &&
-      Math.abs(y) < 40 &&
-      Math.abs(z) < 40
-    ) {
-      // Convert SketchUp inches -> meters (~0.0254) if large
-      const scale = Math.max(Math.abs(x), Math.abs(y), Math.abs(z)) > 12 ? 0.0254 : 1;
-      sampledPoints.push([x * scale, z * scale, -y * scale]);
-      if (sampledPoints.length >= 64) break;
-    }
-  }
+  const primitives: SkpMeshPrimitive[] = scene.glbPrimitives.map((primitive, index) => ({
+    name: primitive.geomName || `${fileName}_mesh_${index}`,
+    positions: new Float32Array(primitive.positions),
+    normals: new Float32Array(primitive.normals),
+    uvs: new Float32Array(primitive.uvs),
+    indices: new Uint32Array(primitive.indices),
+    ...materialProperties(scene, primitive),
+  }));
 
-  // Estimate bounding dimensions from extracted binary geometry or fallback to architectural stage setpiece
-  let width = 2.6;
-  let height = 2.8;
-  let depth = 1.4;
-  if (sampledPoints.length >= 6) {
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, minZ = Infinity, maxZ = -Infinity;
-    for (const [px, py, pz] of sampledPoints) {
-      if (px < minX) minX = px;
-      if (px > maxX) maxX = px;
-      if (py < minY) minY = py;
-      if (py > maxY) maxY = py;
-      if (pz < minZ) minZ = pz;
-      if (pz > maxZ) maxZ = pz;
-    }
-    width = THREE.MathUtils.clamp(maxX - minX, 1.2, 6.0);
-    height = THREE.MathUtils.clamp(maxY - minY, 1.0, 5.0);
-    depth = THREE.MathUtils.clamp(maxZ - minZ, 0.8, 4.0);
+  if (primitives.length === 0) {
+    throw new Error(`No drawable geometry found in "${fileName}".`);
   }
 
   const baseName = fileName.replace(/\.skp$/i, '');
-  const plinth = createBoxPrimitive(`${baseName}_Plinth`, width, 0.24, depth, '#3E4652', 0.35, 0.65, true);
-  const colL = createCylinderPrimitive(`${baseName}_Pillar_L`, 0.14, 0.16, height, '#8D99AE', 0.78, 0.28);
-  const colR = createCylinderPrimitive(`${baseName}_Pillar_R`, 0.14, 0.16, height, '#8D99AE', 0.78, 0.28);
-  const headerBeam = createBoxPrimitive(`${baseName}_Header`, width + 0.3, 0.28, 0.36, '#D97706', 0.45, 0.42);
-
   const rootNode: SkpGroupNode = {
     id: 'skp-root',
     name: baseName,
     isComponentInstance: false,
-    matrix: makeTransformMatrix(0, 0, 0),
-    primitives: [],
-    children: [
-      {
-        id: 'skp-plinth',
-        name: header.extractedStrings[0] || 'SKP_Base_Group',
-        isComponentInstance: true,
-        matrix: makeTransformMatrix(0, 0.12, 0),
-        primitives: [plinth],
-        children: [],
-      },
-      {
-        id: 'skp-col-l',
-        name: header.extractedStrings[1] || 'SKP_Column_Left',
-        isComponentInstance: true,
-        matrix: makeTransformMatrix(-width * 0.42, height / 2 + 0.24, 0),
-        primitives: [colL],
-        children: [],
-      },
-      {
-        id: 'skp-col-r',
-        name: header.extractedStrings[2] || 'SKP_Column_Right',
-        isComponentInstance: true,
-        matrix: makeTransformMatrix(width * 0.42, height / 2 + 0.24, 0),
-        primitives: [colR],
-        children: [],
-      },
-      {
-        id: 'skp-header',
-        name: header.extractedStrings[3] || 'SKP_Top_Beam',
-        isComponentInstance: true,
-        matrix: makeTransformMatrix(0, height + 0.38, 0),
-        primitives: [headerBeam],
-        children: [],
-      },
-    ],
+    matrix: [...IDENTITY_MATRIX],
+    primitives,
+    children: [],
   };
-
-  let vertexCount = 0;
-  let faceCount = 0;
-  const countStats = (n: SkpGroupNode) => {
-    for (const p of n.primitives) {
-      vertexCount += p.positions.length / 3;
-      faceCount += p.indices ? p.indices.length / 3 : p.positions.length / 9;
-    }
-    n.children.forEach(countStats);
-  };
-  countStats(rootNode);
+  const stats = collectStats(rootNode);
+  const componentCount = Math.max(1, Object.keys(scene.meshIndex ?? {}).length);
 
   return {
     id: `skp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     fileName,
     format: 'skp',
-    sketchUpVersion: header.version,
-    componentCount: 5,
-    vertexCount,
-    faceCount,
+    sketchUpVersion,
+    componentCount,
+    vertexCount: stats.vertices,
+    faceCount: stats.faces,
     rootNode,
     createdAt: Date.now(),
   };
+}
+
+/** Generate a real .skp file with openskp's writer and read it back through the same parser. */
+export async function generateAndImportSampleSkp(): Promise<SkpParsedModel> {
+  const builder = create();
+  const steel = builder.addMaterial('Sample Steel', [112, 124, 136]);
+  const accent = builder.addMaterial('Sample Accent', [214, 142, 44]);
+
+  const addBox = (name: string, length: number, width: number, height: number, material: number) =>
+    builder.addComponentDefinition(name, (def) => {
+      def.addFace([[0, 0, 0], [length, 0, 0], [length, width, 0], [0, width, 0]], { material });
+      def.addFace([[0, 0, height], [length, 0, height], [length, width, height], [0, width, height]], { material });
+      def.addFace([[0, 0, 0], [length, 0, 0], [length, 0, height], [0, 0, height]], { material });
+      def.addFace([[0, width, 0], [length, width, 0], [length, width, height], [0, width, height]], { material });
+      def.addFace([[0, 0, 0], [0, width, 0], [0, width, height], [0, 0, height]], { material });
+      def.addFace([[length, 0, 0], [length, width, 0], [length, width, height], [length, 0, height]], { material });
+    });
+
+  const beam = addBox('Sample_Truss_Beam', 48, 4, 4, steel);
+  const post = addBox('Sample_Truss_Post', 4, 4, 60, steel);
+  const brace = addBox('Sample_Truss_Brace', 48, 2, 2, accent);
+
+  builder.addInstance(post, { translation: [-24, -24, 0] });
+  builder.addInstance(post, { translation: [-24, 24, 0] });
+  builder.addInstance(beam, { translation: [-24, -24, 60] });
+  builder.addInstance(beam, { translation: [-24, 24, 60] });
+  builder.addInstance(brace, { translation: [-24, -24, 28] });
+
+  const model = await parseSketchUpBytes(builder.toBytes(), 'Sample_Truss_Portal.skp');
+  registerSkpModel(model);
+  return model;
 }
 
 /**
@@ -471,7 +302,7 @@ function parseObjToSkpModel(text: string, fileName: string): SkpParsedModel {
       id: 'obj-root',
       name: fileName,
       isComponentInstance: false,
-      matrix: makeTransformMatrix(0, 0, 0),
+      matrix: [...IDENTITY_MATRIX],
       primitives: [prim],
       children: [],
     },
@@ -594,7 +425,7 @@ export async function ingestModelFile(
 
   let model: SkpParsedModel;
   if (lower.endsWith('.skp')) {
-    model = parseBinarySketchUpModel(new Uint8Array(buffer), file.name);
+    model = await parseSketchUpBytes(new Uint8Array(buffer), file.name);
   } else if (lower.endsWith('.glb') || lower.endsWith('.gltf')) {
     model = await parseGltfToSkpModel(buffer, file.name, options.normalizeTruss);
   } else if (lower.endsWith('.obj')) {
@@ -604,119 +435,6 @@ export async function ingestModelFile(
     throw new Error(`Unsupported 3D model format "${file.name}". Supported: .skp, .glb, .gltf, .obj`);
   }
 
-  registerSkpModel(model);
-  return model;
-}
-
-/**
- * Generates an authentic SketchUp-header binary .skp scenic stage arch & truss portal
- * (with hierarchical component transforms, vertex normals, UVs, and material definitions)
- * and ingests it cleanly.
- */
-export function generateAndImportSampleSkp(): SkpParsedModel {
-  // Authentic SketchUp UTF-16LE header bytes: FF FE FF 0E "SketchUp Model" {24.0.484}
-  const headerStr = '\uFFFE\u0E00SketchUp Model{24.0.484}';
-  const headerBuf = new Uint8Array(headerStr.length * 2);
-  for (let i = 0; i < headerStr.length; i++) {
-    const code = headerStr.charCodeAt(i);
-    headerBuf[i * 2] = code & 0xff;
-    headerBuf[i * 2 + 1] = (code >> 8) & 0xff;
-  }
-
-  const rootNode = {
-    id: 'skp-scenic-portal',
-    name: 'Festival_Scenic_Portal_Arch',
-    isComponentInstance: false,
-    matrix: makeTransformMatrix(0, 0, 0),
-    primitives: [],
-    children: [
-      {
-        id: 'skp-deck-plinth',
-        name: 'Scenic_Center_Plinth',
-        isComponentInstance: true,
-        matrix: makeTransformMatrix(0, 0.2, 0),
-        primitives: [
-          (() => {
-            const p = createBoxPrimitive('Plinth_Deck', 3.4, 0.4, 1.4, '#363D47', 0.25, 0.65, true);
-            return {
-              ...p,
-              positions: Array.from(p.positions),
-              normals: Array.from(p.normals),
-              uvs: Array.from(p.uvs),
-              indices: p.indices ? Array.from(p.indices) : undefined,
-            };
-          })(),
-        ],
-        children: [],
-      },
-      {
-        id: 'skp-tower-left',
-        name: 'Scenic_Tower_SL',
-        isComponentInstance: true,
-        matrix: makeTransformMatrix(-1.45, 1.9, 0, 0, 0, -0.06),
-        primitives: [
-          (() => {
-            const p = createBoxPrimitive('Tower_Pylon_L', 0.38, 3.0, 0.38, '#6B7280', 0.72, 0.35);
-            return {
-              ...p,
-              positions: Array.from(p.positions),
-              normals: Array.from(p.normals),
-              uvs: Array.from(p.uvs),
-              indices: p.indices ? Array.from(p.indices) : undefined,
-            };
-          })(),
-        ],
-        children: [],
-      },
-      {
-        id: 'skp-tower-right',
-        name: 'Scenic_Tower_SR',
-        isComponentInstance: true,
-        matrix: makeTransformMatrix(1.45, 1.9, 0, 0, 0, 0.06),
-        primitives: [
-          (() => {
-            const p = createBoxPrimitive('Tower_Pylon_R', 0.38, 3.0, 0.38, '#6B7280', 0.72, 0.35);
-            return {
-              ...p,
-              positions: Array.from(p.positions),
-              normals: Array.from(p.normals),
-              uvs: Array.from(p.uvs),
-              indices: p.indices ? Array.from(p.indices) : undefined,
-            };
-          })(),
-        ],
-        children: [],
-      },
-      {
-        id: 'skp-arch-crown',
-        name: 'Scenic_Arch_Header',
-        isComponentInstance: true,
-        matrix: makeTransformMatrix(0, 3.55, 0),
-        primitives: [
-          (() => {
-            const p = createBoxPrimitive('Arch_Fascia', 3.6, 0.42, 0.48, '#D97706', 0.45, 0.4);
-            return {
-              ...p,
-              positions: Array.from(p.positions),
-              normals: Array.from(p.normals),
-              uvs: Array.from(p.uvs),
-              indices: p.indices ? Array.from(p.indices) : undefined,
-            };
-          })(),
-        ],
-        children: [],
-      },
-    ],
-  };
-
-  const payloadBytes = new TextEncoder().encode(
-    'CAPSKP1:' + JSON.stringify({ sketchUpVersion: 'SketchUp v24.0.484', rootNode }),
-  );
-  const fullBytes = new Uint8Array(headerBuf.length + payloadBytes.length);
-  fullBytes.set(headerBuf, 0);
-  fullBytes.set(payloadBytes, headerBuf.length);
-
-  const model = parseBinarySketchUpModel(fullBytes, 'Festival_Scenic_Portal.skp');
   registerSkpModel(model);
   return model;
 }
@@ -735,6 +453,11 @@ export interface SerializedSkpPrimitive {
   roughness: number;
   metalness: number;
   hasCheckerTexture?: boolean;
+  textureData?: string;
+  textureMimeType?: 'image/png' | 'image/jpeg';
+  textureName?: string;
+  alphaMode?: 'OPAQUE' | 'MASK' | 'BLEND';
+  doubleSided?: boolean;
 }
 
 export interface SerializedSkpGroupNode {
@@ -810,6 +533,11 @@ function serializeNode(node: SkpGroupNode): SerializedSkpGroupNode {
       roughness: p.roughness,
       metalness: p.metalness,
       hasCheckerTexture: p.hasCheckerTexture,
+      textureData: p.textureData,
+      textureMimeType: p.textureMimeType,
+      textureName: p.textureName,
+      alphaMode: p.alphaMode,
+      doubleSided: p.doubleSided,
     })),
     children: node.children.map(serializeNode),
   };
@@ -832,6 +560,11 @@ function deserializeNode(node: SerializedSkpGroupNode): SkpGroupNode {
       roughness: p.roughness,
       metalness: p.metalness,
       hasCheckerTexture: p.hasCheckerTexture,
+      textureData: p.textureData,
+      textureMimeType: p.textureMimeType,
+      textureName: p.textureName,
+      alphaMode: p.alphaMode,
+      doubleSided: p.doubleSided,
     })),
     children: node.children.map(deserializeNode),
   };

@@ -51,7 +51,7 @@ const SectionHeader: React.FC<{
   <button
     type="button"
     onClick={onToggle}
-    className="w-full flex items-center justify-between px-1.5 py-[3px] bg-[#1F1F1F] border border-[#141414] text-[10px] font-semibold uppercase tracking-wide text-[#CCCCCC] hover:text-[#FFFFFF] cursor-pointer"
+    className="w-full flex items-center justify-between px-1.5 py-[3px] bg-[#1E2229] border border-[#2A2F37] text-[10px] font-semibold uppercase tracking-wide text-[#D4D9E0] hover:text-[#FFFFFF] cursor-pointer"
   >
     <span>{title}</span>
     <span>{collapsed ? '▸' : '▾'}</span>
@@ -60,7 +60,7 @@ const SectionHeader: React.FC<{
 
 const PropRow: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
   <div className="grid grid-cols-[125px_1fr] items-center gap-[8px] min-h-[20px]">
-    <span className="text-[11px] text-[#CCCCCC] truncate">{label}</span>
+    <span className="text-[11px] text-[#D4D9E0] truncate">{label}</span>
     <div className="min-w-0">{children}</div>
   </div>
 );
@@ -101,9 +101,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
 
   if (selectedObjects.length === 0 || !primaryObj) {
     return (
-      <div className="py-4 text-[#999999] text-[11px]">
+      <div className="py-4 text-[#A3AAB5] text-[11px]">
         No object selected. Click any fixture, truss, stage deck, or imported model in Alpha, Beta, or Gamma View. Hold{' '}
-        <span className="text-[#CCCCCC]">Cmd/Ctrl + Click</span> to add or remove items from multi-selection.
+        <span className="text-[#D4D9E0]">Cmd/Ctrl + Click</span> to add or remove items from multi-selection.
       </div>
     );
   }
@@ -139,18 +139,18 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
     <div className="flex flex-col gap-[6px]">
       {/* Multi-selection chip bar */}
       {selectedObjects.length > 1 && (
-        <div className="flex flex-wrap gap-1 p-1.5 bg-[#1F1F1F] border border-[#141414]">
+        <div className="flex flex-wrap gap-1 p-1.5 bg-[#1E2229] border border-[#2A2F37]">
           {selectedObjects.map((item) => (
             <span
               key={item.id}
-              className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[#383838] border border-[#FF9500]/70 text-[10px] text-[#FFFFFF]"
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-[#363C45] border border-[#FF9500]/70 text-[10px] text-[#FFFFFF]"
             >
               <span className="truncate max-w-[120px]">{item.name}</span>
               <button
                 type="button"
                 title="Remove from selection"
                 onClick={() => onSelectObject(item.id, 'toggle')}
-                className="text-[#FF8A80] hover:text-[#FFFFFF] cursor-pointer"
+                className="text-[#FFA9A1] hover:text-[#FFFFFF] cursor-pointer"
               >
                 ×
               </button>
@@ -179,7 +179,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
               onChange={(e) =>
                 onUpdateObjects(targetIds, { layerId: e.target.value || undefined })
               }
-              className="w-full h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px] text-[#FFFFFF]"
+              className="w-full h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px] text-[#FFFFFF]"
             >
               <option value="">(None / Unassigned)</option>
               {layers.map((l) => (
@@ -200,10 +200,10 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     <img
                       src={getMaterialPreviewUrl(activeMat)}
                       alt={activeMat.name}
-                      className="w-[17px] h-[17px] border border-[#141414] shrink-0 object-cover"
+                      className="w-[17px] h-[17px] border border-[#2A2F37] shrink-0 object-cover"
                     />
                   ) : (
-                    <span className="w-[17px] h-[17px] bg-[#2D3139] border border-[#141414] shrink-0" />
+                    <span className="w-[17px] h-[17px] bg-[#2D3139] border border-[#2A2F37] shrink-0" />
                   );
                 })()}
                 <select
@@ -217,7 +217,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                       materialPreset: e.target.value || undefined,
                     })
                   }
-                  className="flex-1 min-w-0 h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px] text-[#FFFFFF]"
+                  className="flex-1 min-w-0 h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px] text-[#FFFFFF]"
                 >
                   <option value="">(Default Surface)</option>
                   {CAPTURE_MATERIAL_CATEGORIES.map((cat) => (
@@ -237,7 +237,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
           {isFixture && (
             <>
               <PropRow label="Motion Fixture">
-                <span className="text-[11px] text-[#6BC938]">
+                <span className="text-[11px] text-[#83D84C]">
                   {primaryObj.kind === 'moving-head' || primaryObj.kind === 'gdtf-fixture'
                     ? 'Yes (Motorized Pan/Tilt)'
                     : 'No (Static Yoke)'}
@@ -283,9 +283,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                   {(['X', 'Y', 'Z'] as const).map((axis, idx) => (
                     <label
                       key={axis}
-                      className="flex items-center gap-1 bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px]"
+                      className="flex items-center gap-1 bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px]"
                     >
-                      <span className="text-[#8E8E93] text-[10px]">{axis}</span>
+                      <span className="text-[#9AA1AC] text-[10px]">{axis}</span>
                       <input
                         type="number"
                         step={0.05}
@@ -307,9 +307,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                   {(['Rx', 'Ry', 'Rz'] as const).map((axis, idx) => (
                     <label
                       key={axis}
-                      className="flex items-center gap-1 bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px]"
+                      className="flex items-center gap-1 bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px]"
                     >
-                      <span className="text-[#8E8E93] text-[10px]">{axis}</span>
+                      <span className="text-[#9AA1AC] text-[10px]">{axis}</span>
                       <input
                         type="number"
                         step={5}
@@ -329,8 +329,8 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
               {isStageDeck && (
                 <PropRow label="Dimensions (L × W m)">
                   <div className="grid grid-cols-2 gap-[4px] tabular-nums">
-                    <label className="flex items-center gap-1 bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px]">
-                      <span className="text-[#8E8E93] text-[10px]">L</span>
+                    <label className="flex items-center gap-1 bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px]">
+                      <span className="text-[#9AA1AC] text-[10px]">L</span>
                       <input
                         type="number"
                         step={0.5}
@@ -344,8 +344,8 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         className="w-full bg-transparent text-[11px] text-[#FFFFFF] focus:outline-none tabular-nums"
                       />
                     </label>
-                    <label className="flex items-center gap-1 bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px]">
-                      <span className="text-[#8E8E93] text-[10px]">W</span>
+                    <label className="flex items-center gap-1 bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px]">
+                      <span className="text-[#9AA1AC] text-[10px]">W</span>
                       <input
                         type="number"
                         step={0.5}
@@ -369,9 +369,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     {(['Sx', 'Sy', 'Sz'] as const).map((axis, idx) => (
                       <label
                         key={axis}
-                        className="flex items-center gap-1 bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px]"
+                        className="flex items-center gap-1 bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px]"
                       >
-                        <span className="text-[#8E8E93] text-[10px]">{axis}</span>
+                        <span className="text-[#9AA1AC] text-[10px]">{axis}</span>
                         <input
                           type="number"
                           step={0.1}
@@ -392,7 +392,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
             </>
           )}
           {selectedObjects.length > 1 && (
-            <div className="text-[10px] text-[#8E8E93]">
+            <div className="text-[10px] text-[#9AA1AC]">
               Drag any selected object in a CAD viewport to translate all {selectedObjects.length} items together.
             </div>
           )}
@@ -401,9 +401,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
 
       {/* SKP MODEL SUMMARY */}
       {isSkp && skpModel && (
-        <div className="p-1.5 bg-[#1E1E1E] border border-[#141414] text-[10px] text-[#CCCCCC]">
+        <div className="p-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[10px] text-[#D4D9E0]">
           <div className="font-semibold text-[#FFFFFF]">SketchUp Component Graph: {skpModel.fileName}</div>
-          <div className="text-[#8E8E93]">
+          <div className="text-[#9AA1AC]">
             {skpModel.sketchUpVersion} · {skpModel.componentCount} nodes · {skpModel.vertexCount} verts ·{' '}
             {skpModel.faceCount} faces
           </div>
@@ -430,13 +430,13 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                       (primaryObj.kind === 'moving-head' ? 'Robe' : 'ETC')
                     }
                     onChange={(e) => onUpdateObjects(targetIds, { make: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="text"
                     value={primaryObj.name}
                     onChange={(e) => onUpdateObjects([primaryObj.id], { name: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -447,7 +447,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     type="text"
                     value={primaryObj.version ?? '2.1.4'}
                     onChange={(e) => onUpdateObjects(targetIds, { version: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="number"
@@ -456,7 +456,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { weightKg: Number(e.target.value) || 0 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -469,14 +469,14 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects([primaryObj.id], { channel: Number(e.target.value) || 1 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px] tabular-nums"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px] tabular-nums"
                   />
                   <select
                     value={primaryObj.groupId ?? ''}
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { groupId: e.target.value || undefined })
                     }
-                    className="h-[19px] px-1 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   >
                     <option value="">(None)</option>
                     {fixtureGroups.map((g) => (
@@ -495,14 +495,14 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     placeholder="Circuit"
                     value={primaryObj.circuit ?? 'Socapex A1'}
                     onChange={(e) => onUpdateObjects(targetIds, { circuit: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="text"
                     placeholder="Purpose"
                     value={primaryObj.purpose ?? 'Stage Spot / Wash'}
                     onChange={(e) => onUpdateObjects(targetIds, { purpose: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -513,13 +513,13 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     type="text"
                     value={primaryObj.consoleId ?? `FIX-${primaryObj.channel ?? 101}`}
                     onChange={(e) => onUpdateObjects(targetIds, { consoleId: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="text"
                     value={primaryObj.externalId ?? primaryObj.id}
                     onChange={(e) => onUpdateObjects(targetIds, { externalId: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -530,7 +530,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                   value={primaryObj.note ?? ''}
                   placeholder="Rigging or focus note..."
                   onChange={(e) => onUpdateObjects(targetIds, { note: e.target.value })}
-                  className="w-full h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                  className="w-full h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                 />
               </PropRow>
             </div>
@@ -555,7 +555,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         dmxFootprint: m?.footprint ?? primaryObj.dmxFootprint,
                       });
                     }}
-                    className="w-full h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="w-full h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   >
                     {gdtfProfile.dmxModes.map((m) => (
                       <option key={m.name} value={m.name}>
@@ -569,7 +569,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(fixtureIds, { dmxFootprint: Number(e.target.value) })
                     }
-                    className="w-full h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="w-full h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   >
                     <option value={8}>1 (8 chs Compact)</option>
                     <option value={16}>2 (16 chs Standard)</option>
@@ -591,9 +591,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         dmxUniverse: Math.max(1, Math.min(4, Number(e.target.value) || 1)),
                       })
                     }
-                    className="w-[46px] h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="w-[46px] h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
-                  <span className="text-[#8E8E93]">.</span>
+                  <span className="text-[#9AA1AC]">.</span>
                   <input
                     type="number"
                     min={1}
@@ -604,9 +604,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         dmxAddress: Math.max(1, Math.min(512, Number(e.target.value) || 1)),
                       })
                     }
-                    className="w-[56px] h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="w-[56px] h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
-                  <span className="text-[10px] text-[#8E8E93]">
+                  <span className="text-[10px] text-[#9AA1AC]">
                     ({primaryObj.dmxFootprint ?? 8} ch)
                   </span>
                 </div>
@@ -623,7 +623,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(fixtureIds, { intensity: Number(e.target.value) })
                     }
-                    className="flex-1 accent-[#857431]"
+                    className="flex-1 accent-[#A08F52]"
                   />
                   <span className="w-[32px] text-right tabular-nums text-[10px]">
                     {Math.round((primaryObj.intensity ?? 0.8) * 100)}%
@@ -632,15 +632,15 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     type="color"
                     value={primaryObj.color ?? '#ffffff'}
                     onChange={(e) => onUpdateObjects(fixtureIds, { color: e.target.value })}
-                    className="w-[22px] h-[18px] bg-[#1E1E1E] border border-[#141414] p-0 cursor-pointer"
+                    className="w-[22px] h-[18px] bg-[#1B1F25] border border-[#2A2F37] p-0 cursor-pointer"
                   />
                 </div>
               </PropRow>
 
               <PropRow label="Pan / Tilt / Beam">
                 <div className="grid grid-cols-3 gap-[4px] tabular-nums">
-                  <label className="flex items-center gap-1 bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px]">
-                    <span className="text-[#8E8E93] text-[10px]">P</span>
+                  <label className="flex items-center gap-1 bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px]">
+                    <span className="text-[#9AA1AC] text-[10px]">P</span>
                     <input
                       type="number"
                       step={5}
@@ -651,8 +651,8 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                       className="w-full bg-transparent text-[11px] focus:outline-none"
                     />
                   </label>
-                  <label className="flex items-center gap-1 bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px]">
-                    <span className="text-[#8E8E93] text-[10px]">T</span>
+                  <label className="flex items-center gap-1 bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px]">
+                    <span className="text-[#9AA1AC] text-[10px]">T</span>
                     <input
                       type="number"
                       step={5}
@@ -663,8 +663,8 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                       className="w-full bg-transparent text-[11px] focus:outline-none"
                     />
                   </label>
-                  <label className="flex items-center gap-1 bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px]">
-                    <span className="text-[#8E8E93] text-[10px]">∠</span>
+                  <label className="flex items-center gap-1 bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px]">
+                    <span className="text-[#9AA1AC] text-[10px]">∠</span>
                     <input
                       type="number"
                       min={3}
@@ -696,7 +696,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     value={primaryObj.correction ?? 'Linear'}
                     onChange={(e) => onUpdateObjects(fixtureIds, { correction: e.target.value })}
                     title="Dimmer / Motor Correction"
-                    className="flex-1 h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="flex-1 h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   />
                 </div>
               </PropRow>
@@ -709,7 +709,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(fixtureIds, { panRange: Number(e.target.value) || 540 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="number"
@@ -717,7 +717,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(fixtureIds, { tiltRange: Number(e.target.value) || 265 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -730,7 +730,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(fixtureIds, { limitPanStart: Number(e.target.value) || -270 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="number"
@@ -738,7 +738,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(fixtureIds, { limitPanEnd: Number(e.target.value) || 270 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -768,7 +768,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     `Spot Application lens, 3° - 42°, 25149lm`
                   }
                   onChange={(e) => onUpdateObjects(fixtureIds, { opticsSummary: e.target.value })}
-                  className="w-full h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                  className="w-full h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                 />
               </PropRow>
 
@@ -834,7 +834,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                   <select
                     value={primaryObj.effectWheel ?? 'Open'}
                     onChange={(e) => onUpdateObjects(fixtureIds, { effectWheel: e.target.value })}
-                    className="h-[19px] px-1 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="h-[19px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   >
                     <option value="Open">Effect: Open</option>
                     <option value="Animation">Animation</option>
@@ -843,7 +843,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                   <select
                     value={primaryObj.prism1 ?? 'None'}
                     onChange={(e) => onUpdateObjects(fixtureIds, { prism1: e.target.value })}
-                    className="h-[19px] px-1 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="h-[19px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   >
                     <option value="None">Prism 1: Open</option>
                     <option value="3-Facet">3-Facet</option>
@@ -852,7 +852,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                   <select
                     value={primaryObj.beamShaper ?? 'None'}
                     onChange={(e) => onUpdateObjects(fixtureIds, { beamShaper: e.target.value })}
-                    className="h-[19px] px-1 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="h-[19px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   >
                     <option value="None">Shaper: Open</option>
                     <option value="Framing 4-Blade">4-Blade</option>
@@ -876,7 +876,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     type="text"
                     value={primaryObj.symbolName ?? 'Standard Moving Head'}
                     onChange={(e) => onUpdateObjects(fixtureIds, { symbolName: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   />
                   <input
                     type="number"
@@ -884,7 +884,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(fixtureIds, { symbolScale: Number(e.target.value) || 100 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[10px] tabular-nums"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[10px] tabular-nums"
                   />
                 </div>
               </PropRow>
@@ -897,7 +897,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                       symbolUsage: e.target.value as SceneObject['symbolUsage'],
                     })
                   }
-                  className="w-full h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                  className="w-full h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                 >
                   <option value="Top Views Only">Top Views Only</option>
                   <option value="All Views">All Views</option>
@@ -916,7 +916,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     placeholder="Focus area..."
                     value={primaryObj.focusLabel ?? 'Center Stage'}
                     onChange={(e) => onUpdateObjects(fixtureIds, { focusLabel: e.target.value })}
-                    className="flex-1 h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="flex-1 h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   />
                 </div>
               </PropRow>
@@ -941,13 +941,13 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     type="text"
                     value={primaryObj.make ?? 'Prolyte'}
                     onChange={(e) => onUpdateObjects(targetIds, { make: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="text"
                     value={primaryObj.series ?? 'H30V'}
                     onChange={(e) => onUpdateObjects(targetIds, { series: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -958,13 +958,13 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     type="text"
                     value={primaryObj.subseries ?? 'Box Truss'}
                     onChange={(e) => onUpdateObjects(targetIds, { subseries: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="text"
                     value={primaryObj.part ?? `H30V-L${((primaryObj.length ?? 4) * 100).toFixed(0)}`}
                     onChange={(e) => onUpdateObjects(targetIds, { part: e.target.value })}
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -978,7 +978,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         trussType: e.target.value as SceneObject['trussType'],
                       })
                     }
-                    className="h-[19px] px-1 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="h-[19px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   >
                     <option value="Rectangular Section">Rectangular Section</option>
                     <option value="Triangular Section">Triangular Section</option>
@@ -994,7 +994,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { weightKg: Number(e.target.value) || 0 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[10px] tabular-nums"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[10px] tabular-nums"
                   />
                 </div>
               </PropRow>
@@ -1007,7 +1007,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { pipeDiameterMm: Number(e.target.value) || 48 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="number"
@@ -1015,7 +1015,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { braceDiameterMm: Number(e.target.value) || 16 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -1029,7 +1029,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { sectionWidth: Math.max(0.1, Number(e.target.value) || 0.29) })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="number"
@@ -1038,7 +1038,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { sectionHeight: Math.max(0.1, Number(e.target.value) || 0.29) })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="number"
@@ -1048,7 +1048,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { length: Math.max(0.5, Number(e.target.value) || 2) })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                 </div>
               </PropRow>
@@ -1061,7 +1061,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { circleAngle: Number(e.target.value) || 0 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="number"
@@ -1069,7 +1069,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { circleDiameter: Number(e.target.value) || 0 })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                   />
                   <input
                     type="text"
@@ -1077,7 +1077,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { materialPreset: e.target.value })
                     }
-                    className="h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   />
                 </div>
               </PropRow>
@@ -1096,7 +1096,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                   type="text"
                   value={primaryObj.plotText ?? primaryObj.name}
                   onChange={(e) => onUpdateObjects(targetIds, { plotText: e.target.value })}
-                  className="w-full h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                  className="w-full h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                 />
               </PropRow>
               <PropRow label="Show Type / Dims / Trim">
@@ -1122,7 +1122,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { trimHeightPrecision: e.target.value })
                     }
-                    className="h-[19px] px-1 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="h-[19px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   >
                     <option value="Centimetres">Centimetres</option>
                     <option value="Inches">Inches</option>
@@ -1133,7 +1133,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     onChange={(e) =>
                       onUpdateObjects(targetIds, { measurementUnit: e.target.value })
                     }
-                    className="h-[19px] px-1 bg-[#1E1E1E] border border-[#141414] text-[10px]"
+                    className="h-[19px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[10px]"
                   >
                     <option value="Automatic">Automatic</option>
                     <option value="Metric (m)">Metric (m)</option>
@@ -1185,9 +1185,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         smokeSpeed: Math.max(0, Math.min(200, Number(e.target.value) || 0)),
                       })
                     }
-                    className="flex-1 accent-[#857431]"
+                    className="flex-1 accent-[#A08F52]"
                   />
-                  <label className="flex items-center bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px] w-[58px] tabular-nums">
+                  <label className="flex items-center bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px] w-[58px] tabular-nums">
                     <input
                       type="number"
                       min={0}
@@ -1201,7 +1201,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                       }
                       className="w-full bg-transparent text-[11px] text-[#FFFFFF] text-right focus:outline-none tabular-nums"
                     />
-                    <span className="text-[10px] text-[#8E8E93] ml-0.5">%</span>
+                    <span className="text-[10px] text-[#9AA1AC] ml-0.5">%</span>
                   </label>
                 </div>
               </PropRow>
@@ -1236,13 +1236,13 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     }}
                   />
                   {primaryObj.smokeAutoSize && (
-                    <span className="text-[10px] text-[#6BC938]">Fitted to project bounds</span>
+                    <span className="text-[10px] text-[#83D84C]">Fitted to project bounds</span>
                   )}
                 </div>
               </PropRow>
 
               <PropRow label="Width">
-                <label className="flex items-center bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px] tabular-nums">
+                <label className="flex items-center bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px] tabular-nums">
                   <input
                     type="number"
                     min={1}
@@ -1257,12 +1257,12 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     }
                     className="w-full bg-transparent text-[11px] text-[#FFFFFF] disabled:text-[#777777] focus:outline-none tabular-nums"
                   />
-                  <span className="text-[10px] text-[#8E8E93] ml-1">m</span>
+                  <span className="text-[10px] text-[#9AA1AC] ml-1">m</span>
                 </label>
               </PropRow>
 
               <PropRow label="Height">
-                <label className="flex items-center bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px] tabular-nums">
+                <label className="flex items-center bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px] tabular-nums">
                   <input
                     type="number"
                     min={1}
@@ -1277,12 +1277,12 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     }
                     className="w-full bg-transparent text-[11px] text-[#FFFFFF] disabled:text-[#777777] focus:outline-none tabular-nums"
                   />
-                  <span className="text-[10px] text-[#8E8E93] ml-1">m</span>
+                  <span className="text-[10px] text-[#9AA1AC] ml-1">m</span>
                 </label>
               </PropRow>
 
               <PropRow label="Depth">
-                <label className="flex items-center bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px] tabular-nums">
+                <label className="flex items-center bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px] tabular-nums">
                   <input
                     type="number"
                     min={1}
@@ -1297,7 +1297,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                     }
                     className="w-full bg-transparent text-[11px] text-[#FFFFFF] disabled:text-[#777777] focus:outline-none tabular-nums"
                   />
-                  <span className="text-[10px] text-[#8E8E93] ml-1">m</span>
+                  <span className="text-[10px] text-[#9AA1AC] ml-1">m</span>
                 </label>
               </PropRow>
 
@@ -1314,9 +1314,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         smokeDensity: Math.max(0, Math.min(100, Number(e.target.value) || 0)),
                       })
                     }
-                    className="flex-1 accent-[#857431]"
+                    className="flex-1 accent-[#A08F52]"
                   />
-                  <label className="flex items-center bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px] w-[58px] tabular-nums">
+                  <label className="flex items-center bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px] w-[58px] tabular-nums">
                     <input
                       type="number"
                       min={0}
@@ -1330,7 +1330,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                       }
                       className="w-full bg-transparent text-[11px] text-[#FFFFFF] text-right focus:outline-none tabular-nums"
                     />
-                    <span className="text-[10px] text-[#8E8E93] ml-0.5">%</span>
+                    <span className="text-[10px] text-[#9AA1AC] ml-0.5">%</span>
                   </label>
                 </div>
               </PropRow>
@@ -1348,9 +1348,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         smokeVariation: Math.max(0, Math.min(100, Number(e.target.value) || 0)),
                       })
                     }
-                    className="flex-1 accent-[#857431]"
+                    className="flex-1 accent-[#A08F52]"
                   />
-                  <label className="flex items-center bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px] w-[58px] tabular-nums">
+                  <label className="flex items-center bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px] w-[58px] tabular-nums">
                     <input
                       type="number"
                       min={0}
@@ -1364,7 +1364,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                       }
                       className="w-full bg-transparent text-[11px] text-[#FFFFFF] text-right focus:outline-none tabular-nums"
                     />
-                    <span className="text-[10px] text-[#8E8E93] ml-0.5">%</span>
+                    <span className="text-[10px] text-[#9AA1AC] ml-0.5">%</span>
                   </label>
                 </div>
               </PropRow>
@@ -1382,9 +1382,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         smokeEdgeSoftness: Math.max(0, Math.min(100, Number(e.target.value) || 0)),
                       })
                     }
-                    className="flex-1 accent-[#857431]"
+                    className="flex-1 accent-[#A08F52]"
                   />
-                  <label className="flex items-center bg-[#1E1E1E] border border-[#141414] px-1.5 h-[19px] w-[58px] tabular-nums">
+                  <label className="flex items-center bg-[#1B1F25] border border-[#2A2F37] px-1.5 h-[19px] w-[58px] tabular-nums">
                     <input
                       type="number"
                       min={0}
@@ -1398,7 +1398,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                       }
                       className="w-full bg-transparent text-[11px] text-[#FFFFFF] text-right focus:outline-none tabular-nums"
                     />
-                    <span className="text-[10px] text-[#8E8E93] ml-0.5">%</span>
+                    <span className="text-[10px] text-[#9AA1AC] ml-0.5">%</span>
                   </label>
                 </div>
               </PropRow>
@@ -1414,7 +1414,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                         onUpdateObjects(selectedSmokeIds, { smokePatch: '1.150' });
                       }
                     }}
-                    className="flex-1 h-[19px] px-1.5 bg-[#1E1E1E] border border-[#141414] text-[11px] text-[#FFFFFF]"
+                    className="flex-1 h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[11px] text-[#FFFFFF]"
                   >
                     <option value="Unpatched">Unpatched</option>
                     <option value="patched">DMX Patched (2 ch: Density / Speed)</option>
@@ -1432,9 +1432,9 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                             smokePatch: `${u}.${parsedSmokePatch.address}`,
                           });
                         }}
-                        className="w-[34px] h-[19px] px-1 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                        className="w-[34px] h-[19px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                       />
-                      <span className="text-[#8E8E93]">.</span>
+                      <span className="text-[#9AA1AC]">.</span>
                       <input
                         type="number"
                         min={1}
@@ -1446,7 +1446,7 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
                             smokePatch: `${parsedSmokePatch.universe}.${a}`,
                           });
                         }}
-                        className="w-[46px] h-[19px] px-1 bg-[#1E1E1E] border border-[#141414] text-[11px]"
+                        className="w-[46px] h-[19px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[11px]"
                       />
                     </div>
                   )}
@@ -1458,18 +1458,18 @@ export const SelectedItemsInspector: React.FC<SelectedItemsInspectorProps> = ({
       )}
 
       {/* Action Buttons */}
-      <div className="flex items-center gap-2 pt-2 mt-1 border-t border-[#1A1A1A]">
+      <div className="flex items-center gap-2 pt-2 mt-1 border-t border-[#171B20]">
         <button
           type="button"
           onClick={() => onDuplicateObjects(targetIds)}
-          className="px-2.5 py-1 bg-[#383838] border border-[#141414] hover:bg-[#4A4A4A] text-[11px] cursor-pointer"
+          className="px-2.5 py-1 bg-[#363C45] border border-[#2A2F37] hover:bg-[#4A525D] text-[11px] cursor-pointer"
         >
           Duplicate {selectedObjects.length > 1 ? `(${selectedObjects.length})` : ''}
         </button>
         <button
           type="button"
           onClick={() => onDeleteObjects(targetIds)}
-          className="px-2.5 py-1 bg-[#4B1E1B] border border-[#141414] hover:bg-[#6A2824] text-[#FF8A80] text-[11px] cursor-pointer"
+          className="px-2.5 py-1 bg-[#45231F] border border-[#2A2F37] hover:bg-[#6A2824] text-[#FFA9A1] text-[11px] cursor-pointer"
         >
           Delete {selectedObjects.length > 1 ? `(${selectedObjects.length})` : ''}
         </button>

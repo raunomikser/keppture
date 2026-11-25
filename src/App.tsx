@@ -110,7 +110,7 @@ const ToolbarButton: React.FC<{
     title={label}
     aria-label={label}
     onClick={onClick}
-    className="w-[25px] h-[25px] flex items-center justify-center rounded-[4px] text-[#B8B8B8] hover:bg-[#3A3A3A] hover:text-white active:bg-[#505050] transition-colors"
+    className="w-[25px] h-[25px] flex items-center justify-center rounded-[4px] text-[#B8B8B8] hover:bg-[#3A414B] hover:text-white active:bg-[#505050] transition-colors"
   >
     {children}
   </button>
@@ -828,8 +828,8 @@ export default function App() {
     [handlePlaceSkpModel],
   );
 
-  const handleLoadSampleSkp = useCallback(() => {
-    const model = generateAndImportSampleSkp();
+  const handleLoadSampleSkp = useCallback(async () => {
+    const model = await generateAndImportSampleSkp();
     setSkpModels((prev) => [model, ...prev]);
     handlePlaceSkpModel(model, [0, 0, -2.1]);
   }, [handlePlaceSkpModel]);
@@ -1489,17 +1489,17 @@ export default function App() {
   const windowTitle = metadata.project.trim() ? metadata.project.trim() : 'Untitled - Demo';
 
   return (
-    <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#000000]">
+    <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#0A0C10]">
       {/* Web app toolbar: app identity, file actions, document title, fullscreen */}
-      <header className="h-[36px] shrink-0 bg-[#222222] border-b border-[#000000] flex items-center px-[10px] gap-[6px] select-none relative z-40">
+      <header className="h-[36px] shrink-0 bg-[#20242B] border-b border-[#0A0C10] flex items-center px-[10px] gap-[6px] select-none relative z-40">
         <div className="flex items-center gap-[6px] shrink-0">
-          <div className="w-[19px] h-[19px] rounded-[4px] bg-[#7CE043]/15 border border-[#7CE043]/45 flex items-center justify-center">
+          <div className="w-[19px] h-[19px] rounded-[4px] bg-[#93E75C]/15 border border-[#93E75C]/45 flex items-center justify-center">
             <FixtureGroupsIcon className="w-[13px] h-[13px]" />
           </div>
-          <span className="text-[11px] font-semibold tracking-[0.02em] text-[#E5E5E5]">Keppture</span>
+          <span className="text-[11px] font-semibold tracking-[0.02em] text-[#EBEEF2]">Keppture</span>
         </div>
 
-        <div className="h-[16px] w-px bg-[#3A3A3A] shrink-0" />
+        <div className="h-[16px] w-px bg-[#3A414B] shrink-0" />
 
         {/* File Dropdown Menu */}
         <FileMenuBar
@@ -1528,7 +1528,7 @@ export default function App() {
           onExportFixtureData={handleExportFixtureData}
         />
 
-        <div className="h-[16px] w-px bg-[#3A3A3A] shrink-0" />
+        <div className="h-[16px] w-px bg-[#3A414B] shrink-0" />
 
         <div className="flex items-center gap-[2px] shrink-0">
           <ToolbarButton label={`New project (${MOD_KEY} N)`} onClick={handleNewProject}>
@@ -1548,7 +1548,7 @@ export default function App() {
         {/* Document title, centered in the available space */}
         <div className="flex-1 min-w-0 flex justify-center px-[8px]">
           <span
-            className="max-w-full text-[12px] leading-none font-medium text-[#CCCCCC] tracking-[0.01em] truncate"
+            className="max-w-full text-[12px] leading-none font-medium text-[#D4D9E0] tracking-[0.01em] truncate"
             title={windowTitle}
           >
             {windowTitle}
@@ -1557,11 +1557,11 @@ export default function App() {
 
         <div className="flex items-center gap-[6px] shrink-0">
           {toastMsg && (
-            <div className="px-2 py-0.5 bg-[#1B3311] border border-[#4D8C2A] text-[#6BC938] text-[10px] truncate max-w-[260px]">
+            <div className="px-2 py-0.5 bg-[#1D3316] border border-[#5A9E35] text-[#83D84C] text-[10px] truncate max-w-[260px]">
               {toastMsg}
             </div>
           )}
-          <div className="h-[16px] w-px bg-[#3A3A3A]" />
+          <div className="h-[16px] w-px bg-[#3A414B]" />
           <ToolbarButton
             label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             onClick={toggleFullscreen}
@@ -1588,7 +1588,7 @@ export default function App() {
       </header>
 
       {/* Main 2x2 Quad-Pane Grid Workspace separated by 1px pure black (#000000) dividers */}
-      <main className="relative flex-1 min-h-0 bg-[#000000]">
+      <main className="relative flex-1 min-h-0 bg-[#0A0C10]">
         <div
           className={`w-full h-full bg-[#000000] ${
             maximizedPane
@@ -1608,7 +1608,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => togglePopOut(id)}
-                    className="px-2.5 py-1 bg-[#262626] border border-[#4A4A4A] text-[#CCCCCC] hover:text-[#FFFFFF] cursor-pointer"
+                    className="px-2.5 py-1 bg-[#252A31] border border-[#4A525D] text-[#D4D9E0] hover:text-[#FFFFFF] cursor-pointer"
                   >
                     Dock {title}
                   </button>
@@ -1637,7 +1637,7 @@ export default function App() {
           return (
             <div
               key={`pop-${id}`}
-              className="fixed z-50 w-[560px] h-[390px] border border-[#4A4A4A] shadow-[0_18px_48px_rgba(0,0,0,0.85)] flex flex-col bg-[#000000]"
+              className="fixed z-50 w-[560px] h-[390px] border border-[#4A525D] shadow-[0_18px_48px_rgba(0,0,0,0.85)] flex flex-col bg-[#0A0C10]"
               style={{ left: `${pos.x}px`, top: `${pos.y}px` }}
               onPointerDown={(e) => {
                 const target = e.target as HTMLElement;

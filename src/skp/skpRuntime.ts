@@ -8,14 +8,34 @@ import {
 } from '../three/fixtureFactory';
 import { buildCaptureMeshMaterial } from '../three/materialsLibrary';
 import { SceneObject } from '../types/visualizer';
-import { getSkpModel, SkpGroupNode } from './skpParser';
+import { getSkpModel, SkpGroupNode, SkpMeshPrimitive } from './skpParser';
 
 const SELECTED_COLOR = 0xff3b30;
+const textureCache = new Map<string, THREE.Texture>();
 
 const _mat4 = new THREE.Matrix4();
 const _pos = new THREE.Vector3();
 const _quat = new THREE.Quaternion();
 const _scale = new THREE.Vector3();
+
+function getSkpTexture(prim: SkpMeshPrimitive): THREE.Texture | null {
+  if (!prim.textureData) {
+    return prim.hasCheckerTexture ? getSharedStageTexture() : null;
+  }
+  const mimeType = prim.textureMimeType ?? 'image/png';
+  const key = `${mimeType}:${prim.textureData}`;
+  const cached = textureCache.get(key);
+  if (cached) return cached;
+
+  const texture = new THREE.TextureLoader().load(`data:${mimeType};base64,${prim.textureData}`);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.flipY = false;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.anisotropy = 4;
+  textureCache.set(key, texture);
+  return texture;
+}
 
 function buildSkpNodeGroup(
   node: SkpGroupNode,
@@ -71,11 +91,13 @@ function buildSkpNodeGroup(
     } else {
       mat = new THREE.MeshStandardMaterial({
         color: isSelected ? 0x8b2c25 : new THREE.Color(prim.colorHex),
-        map: prim.hasCheckerTexture ? getSharedStageTexture() : null,
+        map: getSkpTexture(prim),
         roughness: prim.roughness,
         metalness: prim.metalness,
-        transparent: prim.opacity < 0.99,
+        transparent: prim.opacity < 0.99 || prim.alphaMode === 'BLEND',
         opacity: prim.opacity,
+        alphaTest: prim.alphaMode === 'MASK' ? 0.5 : 0,
+        side: prim.doubleSided ? THREE.DoubleSide : THREE.FrontSide,
       });
     }
 

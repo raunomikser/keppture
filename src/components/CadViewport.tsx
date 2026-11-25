@@ -2527,7 +2527,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
       {/* Marquee Drag-Box Selection Rectangle */}
       {marqueeRect && marqueeRect.w > 2 && marqueeRect.h > 2 && (
         <div
-          className="pointer-events-none absolute z-[15] border border-[#6BC938] bg-[#6BC938]/15"
+          className="pointer-events-none absolute z-[15] border border-[#83D84C] bg-[#83D84C]/15"
           style={{
             left: `${marqueeRect.x}px`,
             top: `${marqueeRect.y}px`,
@@ -2540,17 +2540,17 @@ export const CadViewport: React.FC<CadViewportProps> = ({
       {/* Real-time Gizmo / Drag Delta Readout Tooltip */}
       {dragDeltaHud && (
         <div
-          className="pointer-events-none absolute z-30 px-2 py-1.5 bg-[#161616]/95 border border-[#4D8C2A] shadow-lg text-[10px] leading-[14px] text-[#E5E5EA] tabular-nums whitespace-nowrap"
+          className="pointer-events-none absolute z-30 px-2 py-1.5 bg-[#191D23]/95 border border-[#5A9E35] shadow-lg text-[10px] leading-[14px] text-[#E5E5EA] tabular-nums whitespace-nowrap"
           style={{
             left: `${Math.min(Math.max(8, vpSize.w - 190), Math.max(8, dragDeltaHud.x + 14))}px`,
             top: `${Math.min(Math.max(8, vpSize.h - 74), Math.max(8, dragDeltaHud.y + 14))}px`,
           }}
         >
-          <div className="flex items-center justify-between gap-3 text-[#6BC938] font-medium mb-0.5">
+          <div className="flex items-center justify-between gap-3 text-[#83D84C] font-medium mb-0.5">
             <span>{dragDeltaHud.modeLabel}</span>
             <span>{dragDeltaHud.dist.toFixed(2)}m</span>
           </div>
-          <div className="flex items-center gap-2 text-[#CCCCCC]">
+          <div className="flex items-center gap-2 text-[#D4D9E0]">
             <span className="text-[#FF6961]">
               ΔX {dragDeltaHud.dx >= 0 ? '+' : ''}
               {dragDeltaHud.dx.toFixed(2)}
@@ -2564,7 +2564,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
               {dragDeltaHud.dz.toFixed(2)}
             </span>
           </div>
-          <div className="text-[#8E8E93] mt-0.5">
+          <div className="text-[#9AA1AC] mt-0.5">
             Pos ({dragDeltaHud.pos[0].toFixed(2)}, {dragDeltaHud.pos[1].toFixed(2)},{' '}
             {dragDeltaHud.pos[2].toFixed(2)})m
           </div>
@@ -2689,7 +2689,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
       )}
 
       {contextLost && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#000000] text-[#8E8E93] text-[12px]">
+        <div className="absolute inset-0 flex items-center justify-center bg-[#0A0C10] text-[#9AA1AC] text-[12px]">
           WebGL rendering context suspended. Restoring viewport...
         </div>
       )}
@@ -2761,7 +2761,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
               type="button"
               title="Open Live Control Pane"
               onClick={() => setLiveControlOpen(true)}
-              className="w-[26px] h-[26px] rounded-full bg-[#3B6E1C] border border-[#569A2D] flex items-center justify-center text-[#FFFFFF] hover:bg-[#498723] cursor-pointer"
+              className="w-[26px] h-[26px] rounded-full bg-[#487F28] border border-[#63A93B] flex items-center justify-center text-[#FFFFFF] hover:bg-[#55972E] cursor-pointer"
             >
               <Power className="w-[13px] h-[13px]" />
             </button>
@@ -2770,7 +2770,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                 type="button"
                 title="Exit focus mode"
                 onClick={() => setFocusMode(false)}
-                className="h-[26px] px-2 flex items-center gap-1 rounded-full bg-[#4A1E1B] border border-[#D92D20] text-[#FF8A80] text-[10px] cursor-pointer"
+                className="h-[26px] px-2 flex items-center gap-1 rounded-full bg-[#43221F] border border-[#E85A4E] text-[#FFA9A1] text-[10px] cursor-pointer"
               >
                 <Crosshair className="w-[12px] h-[12px]" /> Focus ON
               </button>
@@ -2820,7 +2820,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                   snapOrbitToOrthogonalIfClose();
                 }
               }}
-              className="w-[22px] h-[22px] rounded-full bg-[#3B6E1C] border border-[#569A2D] flex items-center justify-center hover:bg-[#498723] active:scale-95 transition-transform cursor-grab active:cursor-grabbing"
+              className="w-[22px] h-[22px] rounded-full bg-[#487F28] border border-[#63A93B] flex items-center justify-center hover:bg-[#55972E] active:scale-95 transition-transform cursor-grab active:cursor-grabbing"
             >
               <OrbitButtonIcon className="w-[14px] h-[14px]" />
             </button>
@@ -2846,7 +2846,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                   e.currentTarget.releasePointerCapture(e.pointerId);
                 }
               }}
-              className="w-[22px] h-[22px] rounded-full bg-[#3B6E1C] border border-[#569A2D] flex items-center justify-center hover:bg-[#498723] active:scale-95 transition-transform cursor-ns-resize"
+              className="w-[22px] h-[22px] rounded-full bg-[#487F28] border border-[#63A93B] flex items-center justify-center hover:bg-[#55972E] active:scale-95 transition-transform cursor-ns-resize"
             >
               <DollyButtonIcon className="w-[14px] h-[14px]" />
             </button>
@@ -2862,7 +2862,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                   setStoreSubmenuOpen(false);
                   setSettingsMenuOpen((v) => !v);
                 }}
-                className="w-[22px] h-[22px] rounded-full bg-[#3B6E1C] border border-[#569A2D] flex items-center justify-center hover:bg-[#498723] active:scale-95 transition-transform cursor-pointer"
+                className="w-[22px] h-[22px] rounded-full bg-[#487F28] border border-[#63A93B] flex items-center justify-center hover:bg-[#55972E] active:scale-95 transition-transform cursor-pointer"
               >
                 <MenuBarsButtonIcon className="w-[12px] h-[12px]" />
               </button>
@@ -2870,7 +2870,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
               {/* Exact macOS Dark Frosted-Glass Viewport Context Menu */}
               {settingsMenuOpen && (
                 <div
-                  className="absolute bottom-[28px] right-0 w-[238px] py-[5px] rounded-[8px] border border-[#4A4A4A] shadow-[0_12px_36px_rgba(0,0,0,0.75)] z-40 text-[12px] leading-[18px]"
+                  className="absolute bottom-[28px] right-0 w-[238px] py-[5px] rounded-[8px] border border-[#4A525D] shadow-[0_12px_36px_rgba(0,0,0,0.75)] z-40 text-[12px] leading-[18px]"
                   style={{
                     backgroundColor: 'rgba(38, 38, 38, 0.92)',
                     backdropFilter: 'blur(16px)',
@@ -2908,12 +2908,12 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                           <span className="w-[12px] text-[11px] text-center">{checked ? '✔' : ''}</span>
                           <span>{item.label}</span>
                         </span>
-                        <span className="text-[11px] text-[#8E8E93] tabular-nums">{item.shortcut}</span>
+                        <span className="text-[11px] text-[#9AA1AC] tabular-nums">{item.shortcut}</span>
                       </button>
                     );
                   })}
 
-                  <div className="my-[4px] border-t border-[#484848]" />
+                  <div className="my-[4px] border-t border-[#454C56]" />
 
                   {/* Camera Submenu */}
                   <div
@@ -2939,12 +2939,12 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                         <span className="w-[12px]" />
                         <span>Camera</span>
                       </span>
-                      <span className="text-[13px] text-[#8E8E93]">›</span>
+                      <span className="text-[13px] text-[#9AA1AC]">›</span>
                     </button>
 
                     {cameraSubmenuOpen && (
                       <div
-                        className="absolute right-[234px] top-[-4px] w-[140px] py-[4px] rounded-[8px] border border-[#4A4A4A] shadow-2xl"
+                        className="absolute right-[234px] top-[-4px] w-[140px] py-[4px] rounded-[8px] border border-[#4A525D] shadow-2xl"
                         style={{
                           backgroundColor: 'rgba(38, 38, 38, 0.94)',
                           backdropFilter: 'blur(16px)',
@@ -2960,7 +2960,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                               setSettingsMenuOpen(false);
                               setCameraSubmenuOpen(false);
                             }}
-                            className="w-full px-[10px] py-[2px] flex items-center gap-[6px] text-left text-[#FFFFFF] hover:bg-[#6B6032] cursor-pointer"
+                            className="w-full px-[10px] py-[2px] flex items-center gap-[6px] text-left text-[#FFFFFF] hover:bg-[#7E7040] cursor-pointer"
                           >
                             <span className="w-[12px] text-[11px]">
                               {settings.projection === proj ? '✔' : ''}
@@ -2968,7 +2968,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                             <span>{proj}</span>
                           </button>
                         ))}
-                        <div className="my-[3px] border-t border-[#484848]" />
+                        <div className="my-[3px] border-t border-[#454C56]" />
                         <button
                           type="button"
                           onClick={() => {
@@ -2983,7 +2983,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                             setSettingsMenuOpen(false);
                             setCameraSubmenuOpen(false);
                           }}
-                          className="w-full px-[10px] py-[2px] text-left text-[#FFFFFF] hover:bg-[#6B6032] cursor-pointer pl-[28px]"
+                          className="w-full px-[10px] py-[2px] text-left text-[#FFFFFF] hover:bg-[#7E7040] cursor-pointer pl-[28px]"
                         >
                           Reset View
                         </button>
@@ -3015,12 +3015,12 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                         <span className="w-[12px]" />
                         <span>Store Camera</span>
                       </span>
-                      <span className="text-[13px] text-[#8E8E93]">›</span>
+                      <span className="text-[13px] text-[#9AA1AC]">›</span>
                     </button>
 
                     {storeSubmenuOpen && (
                       <div
-                        className="absolute right-[234px] top-[-4px] w-[160px] py-[4px] rounded-[8px] border border-[#4A4A4A] shadow-2xl"
+                        className="absolute right-[234px] top-[-4px] w-[160px] py-[4px] rounded-[8px] border border-[#4A525D] shadow-2xl"
                         style={{
                           backgroundColor: 'rgba(38, 38, 38, 0.94)',
                           backdropFilter: 'blur(16px)',
@@ -3052,7 +3052,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                             setSettingsMenuOpen(false);
                             setStoreSubmenuOpen(false);
                           }}
-                          className="w-full px-[10px] py-[3px] text-left text-[#FFFFFF] hover:bg-[#6B6032] cursor-pointer"
+                          className="w-full px-[10px] py-[3px] text-left text-[#FFFFFF] hover:bg-[#7E7040] cursor-pointer"
                         >
                           Save Current Camera...
                         </button>
@@ -3060,7 +3060,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                     )}
                   </div>
 
-                  <div className="my-[4px] border-t border-[#484848]" />
+                  <div className="my-[4px] border-t border-[#454C56]" />
 
                   {/* Display Toggles */}
                   <button
@@ -3075,7 +3075,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                       <span className="w-[12px] text-[11px] text-center">{settings.showGrid ? '✔' : ''}</span>
                       <span>Grid</span>
                     </span>
-                    <span className="text-[11px] text-[#8E8E93] tabular-nums">⇧ ⌘ G</span>
+                    <span className="text-[11px] text-[#9AA1AC] tabular-nums">⇧ ⌘ G</span>
                   </button>
 
                   <button
@@ -3090,7 +3090,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                       <span className="w-[12px] text-[11px] text-center">{settings.showWidgets ? '✔' : ''}</span>
                       <span>Widgets</span>
                     </span>
-                    <span className="text-[11px] text-[#8E8E93] tabular-nums">⇧ ⌘ W</span>
+                    <span className="text-[11px] text-[#9AA1AC] tabular-nums">⇧ ⌘ W</span>
                   </button>
 
                   <button
@@ -3109,7 +3109,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                       </span>
                       <span>Hidden Objects</span>
                     </span>
-                    <span className="text-[11px] text-[#8E8E93] tabular-nums">⇧ ⌘ H</span>
+                    <span className="text-[11px] text-[#9AA1AC] tabular-nums">⇧ ⌘ H</span>
                   </button>
 
                   {/* Disabled Project Information */}
@@ -3137,7 +3137,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                       </span>
                       <span>Fixture Information</span>
                     </span>
-                    <span className="text-[11px] text-[#8E8E93] tabular-nums">⇧ ⌘ I</span>
+                    <span className="text-[11px] text-[#9AA1AC] tabular-nums">⇧ ⌘ I</span>
                   </button>
 
                   <button
@@ -3158,7 +3158,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                       </span>
                       <span>Selection Navigator</span>
                     </span>
-                    <span className="text-[11px] text-[#8E8E93] tabular-nums">⇧ ⌘ N</span>
+                    <span className="text-[11px] text-[#9AA1AC] tabular-nums">⇧ ⌘ N</span>
                   </button>
 
                   <button
@@ -3178,10 +3178,10 @@ export const CadViewport: React.FC<CadViewportProps> = ({
                       </span>
                       <span>View Navigator</span>
                     </span>
-                    <span className="text-[11px] text-[#8E8E93] tabular-nums">⇧ ⌘ E</span>
+                    <span className="text-[11px] text-[#9AA1AC] tabular-nums">⇧ ⌘ E</span>
                   </button>
 
-                  <div className="my-[4px] border-t border-[#484848]" />
+                  <div className="my-[4px] border-t border-[#454C56]" />
 
                   {/* Save Image & Render Image */}
                   <button
@@ -3217,7 +3217,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
         <button
           type="button"
           onClick={() => onUpdateSettings(settings.id, { showViewNavigator: true })}
-          className="absolute bottom-[8px] right-[8px] z-20 px-2 py-0.5 text-[10px] bg-[#1B3311]/75 border border-[#4D8C2A]/60 text-[#6BC938] hover:bg-[#234416] cursor-pointer"
+          className="absolute bottom-[8px] right-[8px] z-20 px-2 py-0.5 text-[10px] bg-[#1D3316]/75 border border-[#5A9E35]/60 text-[#83D84C] hover:bg-[#264A1B] cursor-pointer"
         >
           Show Navigator
         </button>

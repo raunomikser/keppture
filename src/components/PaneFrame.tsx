@@ -23,7 +23,7 @@ export const PaneFrame: React.FC<PaneFrameProps> = ({
   return (
     <div className={`flex flex-col w-full h-full min-w-0 min-h-0 overflow-hidden bg-[#000000] ${className}`}>
       {/* Exact 20px muted olive-gold / ochre header bar (#857431) */}
-      <div className="h-[20px] shrink-0 bg-[#857431] flex items-center justify-between px-[6px] select-none border-b border-[#000000]">
+      <div className="h-[20px] shrink-0 bg-[#A08F52] flex items-center justify-between px-[6px] select-none border-b border-[#0A0C10]">
         <span className="text-[11px] leading-none font-normal text-[#FFFFFF] tracking-[0.01em] truncate">
           {title}
         </span>
@@ -44,7 +44,7 @@ export const PaneFrame: React.FC<PaneFrameProps> = ({
             type="button"
             title={isMaximized ? 'Restore 2×2 grid view' : 'Maximize pane'}
             onClick={onToggleMaximize}
-            className="w-[14px] h-[14px] flex items-center justify-center bg-[#1A1A1A] border border-[#0D0D0D] text-[#D8D8D8] hover:text-[#FFFFFF] hover:bg-[#2A2A2A] transition-colors cursor-pointer"
+            className="w-[14px] h-[14px] flex items-center justify-center bg-[#171B20] border border-[#0D0D0D] text-[#DFE3E9] hover:text-[#FFFFFF] hover:bg-[#2E343C] transition-colors cursor-pointer"
           >
             <MaximizeIcon maximized={isMaximized} className="w-[10px] h-[10px]" />
           </button>

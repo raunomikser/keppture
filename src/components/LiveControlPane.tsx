@@ -190,7 +190,7 @@ function ControlRow({
     return (
       <div className="flex items-center gap-1 min-h-[18px]">
         <div
-          className="w-[48px] shrink-0 text-[9px] uppercase tracking-[0.04em] leading-tight text-[#8E8E93] truncate"
+          className="w-[48px] shrink-0 text-[9px] uppercase tracking-[0.04em] leading-tight text-[#9AA1AC] truncate"
           title={label}
         >
           {label}
@@ -201,7 +201,7 @@ function ControlRow({
   }
   return (
     <div className="flex flex-col gap-[1px]">
-      <div className="text-[9px] uppercase tracking-[0.08em] text-[#8E8E93]">{label}</div>
+      <div className="text-[9px] uppercase tracking-[0.08em] text-[#9AA1AC]">{label}</div>
       {children}
     </div>
   );
@@ -383,7 +383,7 @@ export function LiveControlPane({
   return (
     <div
       ref={rootRef}
-      className="absolute bottom-[34px] left-[8px] right-auto z-30 h-[190px] max-w-full rounded-[6px] border border-[#4A4A4A] shadow-[0_12px_36px_rgba(0,0,0,0.8)] text-[#FFFFFF] flex flex-row overflow-hidden"
+      className="absolute bottom-[34px] left-[8px] right-auto z-30 h-[190px] max-w-full rounded-[6px] border border-[#4A525D] shadow-[0_12px_36px_rgba(0,0,0,0.8)] text-[#FFFFFF] flex flex-row overflow-hidden"
       style={{ backgroundColor: `rgba(28, 28, 30, ${opacity / 100})` }}
       onPointerDownCapture={syncModifiers}
       onPointerMoveCapture={syncModifiers}
@@ -394,11 +394,11 @@ export function LiveControlPane({
     >
       {/* Fixed left pane — mirrors the manual's always-present control column. */}
       <div
-        className="shrink-0 min-h-0 border-r border-[#3A3A3A] p-1.5 flex flex-col gap-1 overflow-y-auto"
+        className="shrink-0 min-h-0 border-r border-[#3A414B] p-1.5 flex flex-col gap-1 overflow-y-auto"
         style={{ width: fixedWidth }}
       >
         <div className="flex items-center justify-between">
-          <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#D8D8D8]">
+          <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#DFE3E9]">
             Control Pane
           </div>
           <MiniButton title="Close control pane" onClick={onToggleOpen}>
@@ -445,7 +445,7 @@ export function LiveControlPane({
             onChange={(e) =>
               onUpdateSettings(settings.id, { ambientLighting: Number(e.target.value) })
             }
-            className="w-full accent-[#857431]"
+            className="w-full accent-[#A08F52]"
           />
         </ControlRow>
 
@@ -456,7 +456,7 @@ export function LiveControlPane({
             max={100}
             value={opacity}
             onChange={(e) => setOpacity(Number(e.target.value))}
-            className="w-full accent-[#6BC938]"
+            className="w-full accent-[#83D84C]"
           />
         </ControlRow>
 
@@ -474,7 +474,7 @@ export function LiveControlPane({
           </MiniButton>
         </div>
 
-        <div className="mt-auto grid grid-cols-3 gap-1 pt-1 border-t border-[#3A3A3A]">
+        <div className="mt-auto grid grid-cols-3 gap-1 pt-1 border-t border-[#3A414B]">
           <MiniButton title="Duplicate selected" onClick={() => onDuplicateObjects(allIds)} disabled={allIds.length === 0}>
             <Copy className="w-[10px] h-[10px]" />
           </MiniButton>
@@ -497,13 +497,13 @@ export function LiveControlPane({
           e.stopPropagation();
           resizingRef.current = true;
         }}
-        className="w-[4px] h-full shrink-0 cursor-col-resize bg-[#3A3A3A] hover:bg-[#6BC938]"
+        className="w-[4px] h-full shrink-0 cursor-col-resize bg-[#3A414B] hover:bg-[#83D84C]"
       />
 
       {/* One column per selected fixture type (or per fixture when By Type is off). */}
       <div className="min-w-0 min-h-0 h-full overflow-x-auto overflow-y-hidden flex">
         {focusMode && (
-          <div className="w-[160px] h-full shrink-0 p-1.5 border-r border-[#3A3A3A] bg-[#20301A] overflow-y-auto">
+          <div className="w-[160px] h-full shrink-0 p-1.5 border-r border-[#3A414B] bg-[#1C2819] overflow-y-auto">
             <div className="text-[10px] font-semibold text-[#9CE06A] mb-1">Focus Mode</div>
             <p className="text-[10px] leading-[14px] text-[#C8D8BC]">
               Click any object in the viewport to aim all selected fixtures at that point. Click a
@@ -535,14 +535,14 @@ export function LiveControlPane({
           return (
             <div
               key={group.key}
-              className="w-[148px] h-full shrink-0 border-r border-[#3A3A3A] p-1 flex flex-col gap-[1px] overflow-y-auto"
+              className="w-[148px] h-full shrink-0 border-r border-[#3A414B] p-1 flex flex-col gap-[1px] overflow-y-auto"
             >
               <div className="flex items-start justify-between gap-1 mb-[2px]">
                 <div className="min-w-0">
                   <div className="text-[10px] font-semibold leading-[13px] truncate" title={group.label}>
                     {group.label}
                   </div>
-                  <div className="text-[8px] text-[#8E8E93] tabular-nums leading-[10px]">{patch}</div>
+                  <div className="text-[8px] text-[#9AA1AC] tabular-nums leading-[10px]">{patch}</div>
                 </div>
                 <MiniButton title="Select only this group" onClick={() => onSelectMultiple(group.ids, false)}>
                   Solo
@@ -584,7 +584,7 @@ export function LiveControlPane({
                   <ControlRow inline label="Hue">
                     <div
                       title="RGB hue — click or drag"
-                      className="relative h-[13px] w-full shrink-0 cursor-crosshair border border-[#141414]"
+                      className="relative h-[13px] w-full shrink-0 cursor-crosshair border border-[#2A2F37]"
                       style={{
                         background:
                           'linear-gradient(to right, #FF0000 0%, #FFFF00 17%, #00FF00 33%, #00FFFF 50%, #0000FF 67%, #FF00FF 83%, #FF0000 100%)',
@@ -642,7 +642,7 @@ export function LiveControlPane({
                     step={0.01}
                     value={p.intensity ?? 0}
                     onChange={(e) => update(group.ids, { intensity: Number(e.target.value) })}
-                    className="flex-1 min-w-0 accent-[#857431]"
+                    className="flex-1 min-w-0 accent-[#A08F52]"
                   />
                   <span className="text-[8px] text-[#777777] w-[28px] text-right">
                     {p.intensity && p.intensity <= 0.01
@@ -656,7 +656,7 @@ export function LiveControlPane({
                       type="color"
                       value={p.color ?? '#FFFFFF'}
                       onChange={(e) => update(group.ids, { color: e.target.value })}
-                      className="w-[18px] h-[17px] p-0 bg-[#1E1E1E] border border-[#141414] cursor-pointer"
+                      className="w-[18px] h-[17px] p-0 bg-[#1B1F25] border border-[#2A2F37] cursor-pointer"
                       title="Fixture color"
                     />
                   )}
@@ -672,14 +672,14 @@ export function LiveControlPane({
                     step={fine ? 0.05 : 0.5}
                     value={clamp(p.pan ?? 0, -panLimit, panLimit)}
                     onChange={(e) => applyFanned(group.objects, 'pan', Number(e.target.value), -panLimit, panLimit)}
-                    className="flex-1 min-w-0 accent-[#6BC938]"
+                    className="flex-1 min-w-0 accent-[#83D84C]"
                   />
                   <input
                     type="number"
                     step={fine ? 0.05 : 0.5}
                     value={p.pan ?? 0}
                     onChange={(e) => update(group.ids, { pan: Number(e.target.value) || 0 })}
-                    className="w-[40px] h-[17px] px-1 bg-[#1E1E1E] border border-[#141414] text-[10px] tabular-nums"
+                    className="w-[40px] h-[17px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[10px] tabular-nums"
                     title="Pan degrees (Ctrl/⌘ + drag to fan)"
                   />
                 </ControlRow>
@@ -694,14 +694,14 @@ export function LiveControlPane({
                     step={fine ? 0.05 : 0.5}
                     value={clamp(p.tilt ?? 0, -tiltLimit, tiltLimit)}
                     onChange={(e) => applyFanned(group.objects, 'tilt', Number(e.target.value), -tiltLimit, tiltLimit)}
-                    className="flex-1 min-w-0 accent-[#6BC938]"
+                    className="flex-1 min-w-0 accent-[#83D84C]"
                   />
                   <input
                     type="number"
                     step={fine ? 0.05 : 0.5}
                     value={p.tilt ?? 0}
                     onChange={(e) => update(group.ids, { tilt: Number(e.target.value) || 0 })}
-                    className="w-[40px] h-[17px] px-1 bg-[#1E1E1E] border border-[#141414] text-[10px] tabular-nums"
+                    className="w-[40px] h-[17px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[10px] tabular-nums"
                     title="Tilt degrees (Ctrl/⌘ + drag to fan)"
                   />
                 </ControlRow>
@@ -725,7 +725,7 @@ export function LiveControlPane({
                     step={fine ? 0.05 : 0.5}
                     value={p.beamAngle ?? 20}
                     onChange={(e) => update(group.ids, { beamAngle: clamp(Number(e.target.value) || 20, 3, 60) })}
-                    className="w-[40px] h-[17px] px-1 bg-[#1E1E1E] border border-[#141414] text-[10px] tabular-nums"
+                    className="w-[40px] h-[17px] px-1 bg-[#1B1F25] border border-[#2A2F37] text-[10px] tabular-nums"
                     title="Beam angle in degrees"
                   />
                 </ControlRow>

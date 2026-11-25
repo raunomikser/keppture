@@ -90,7 +90,7 @@ export const FileMenuBar: React.FC<FileMenuBarProps> = ({
       style={{ backgroundColor: hoveredKey === key ? '#6B6032' : 'transparent' }}
     >
       <span>{label}</span>
-      {shortcut && <span className="text-[11px] text-[#8E8E93] tabular-nums ml-4">{shortcut}</span>}
+      {shortcut && <span className="text-[11px] text-[#9AA1AC] tabular-nums ml-4">{shortcut}</span>}
     </button>
   );
 
@@ -113,7 +113,7 @@ export const FileMenuBar: React.FC<FileMenuBarProps> = ({
 
       {open && (
         <div
-          className="absolute left-0 top-[24px] w-[248px] py-[5px] rounded-[7px] border border-[#4A4A4A] shadow-[0_14px_38px_rgba(0,0,0,0.82)] z-50 select-none"
+          className="absolute left-0 top-[24px] w-[248px] py-[5px] rounded-[7px] border border-[#4A525D] shadow-[0_14px_38px_rgba(0,0,0,0.82)] z-50 select-none"
           style={{
             backgroundColor: 'rgba(38, 38, 38, 0.96)',
             backdropFilter: 'blur(16px)',
@@ -141,16 +141,16 @@ export const FileMenuBar: React.FC<FileMenuBarProps> = ({
               style={{ backgroundColor: hoveredKey === 'open-recent' ? '#6B6032' : 'transparent' }}
             >
               <span>Open Recent</span>
-              <span className="text-[12px] text-[#8E8E93]">›</span>
+              <span className="text-[12px] text-[#9AA1AC]">›</span>
             </button>
 
             {recentSubOpen && (
               <div
-                className="absolute left-[244px] top-[-4px] w-[210px] py-[4px] rounded-[7px] border border-[#4A4A4A] shadow-2xl"
+                className="absolute left-[244px] top-[-4px] w-[210px] py-[4px] rounded-[7px] border border-[#4A525D] shadow-2xl"
                 style={{ backgroundColor: 'rgba(38, 38, 38, 0.97)' }}
               >
                 {recentFiles.length === 0 ? (
-                  <div className="px-[10px] py-[3px] text-[11px] text-[#8E8E93]">
+                  <div className="px-[10px] py-[3px] text-[11px] text-[#9AA1AC]">
                     No recent files
                   </div>
                 ) : (
@@ -162,10 +162,10 @@ export const FileMenuBar: React.FC<FileMenuBarProps> = ({
                         onOpenRecent(rf.id);
                         closeMenu();
                       }}
-                      className="w-full px-[10px] py-[3px] flex items-center justify-between text-left text-[11px] text-[#FFFFFF] hover:bg-[#6B6032] cursor-pointer"
+                      className="w-full px-[10px] py-[3px] flex items-center justify-between text-left text-[11px] text-[#FFFFFF] hover:bg-[#7E7040] cursor-pointer"
                     >
                       <span className="truncate">{rf.name}</span>
-                      <span className="text-[9px] text-[#8E8E93] ml-2 shrink-0">{rf.savedAt}</span>
+                      <span className="text-[9px] text-[#9AA1AC] ml-2 shrink-0">{rf.savedAt}</span>
                     </button>
                   ))
                 )}
@@ -176,7 +176,7 @@ export const FileMenuBar: React.FC<FileMenuBarProps> = ({
           {renderItem('save', 'Save', `${platformModifier} S`, onSaveProject)}
           {renderItem('save-as', 'Save As...', `⇧ ${platformModifier} S`, onSaveProjectAs)}
 
-          <div className="my-[4px] border-t border-[#484848]" />
+          <div className="my-[4px] border-t border-[#454C56]" />
 
           {renderItem('import-model', 'Import Model...', null, () => importModelRef.current?.click())}
           {renderItem('import-fixture', 'Import Fixture Data...', null, () =>
@@ -186,7 +186,7 @@ export const FileMenuBar: React.FC<FileMenuBarProps> = ({
             importContentRef.current?.click(),
           )}
 
-          <div className="my-[4px] border-t border-[#484848]" />
+          <div className="my-[4px] border-t border-[#454C56]" />
 
           {renderItem('export-project', 'Export Legacy JSON...', null, onExportProject)}
           {renderItem('export-model', 'Export Model...', null, onExportModel)}
