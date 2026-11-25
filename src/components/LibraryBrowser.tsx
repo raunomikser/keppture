@@ -405,12 +405,13 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
     })).filter((grp) => grp.items.length > 0);
   }, [activeCategory, filteredMaterials]);
 
-  const showFolderView =
+  // Manufacturers stay visible as expandable rows; their assets render inline below.
+  const showFolderTree =
     !isFiltering &&
-    openFolder === null &&
     activeCategory !== 'Built-In' &&
     activeCategory !== 'Recent' &&
     activeCategory !== 'Materials' &&
+    activeCategory !== 'Gobos' &&
     folders.length > 1;
 
   const handleGdtfFiles = async (files: FileList | null) => {
@@ -439,6 +440,298 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
       setStatusError(err instanceof Error ? err.message : 'Failed to parse 3D model file');
     }
   };
+
+  const assetRows = (
+    <>
+      {/* Asset Rows (flat listing when filtering or browsing a single folder) */}
+      {activeCategory !== 'Built-In' && activeCategory !== 'Materials' && (
+      <div className="flex flex-col divide-y divide-[#2A2F37]">
+        {openFolder && !isFiltering && !showFolderTree && (
+          <button
+            type="button"
+            onClick={() => setOpenFolder(null)}
+            className="w-full h-[23px] px-2.5 bg-[#1C1C1C] hover:bg-[#2C2C2C] flex items-center gap-1.5 text-left text-[10px] text-[#D4D9E0] cursor-pointer"
+          >
+            <span>‹ Back to {activeCategory}</span>
+          </button>
+        )}
+
+        {/* Real GDTF archives from the packaged library */}
+        {filteredLibraryGdtf.length > 0 && (
+          <>
+            <div className="px-2.5 py-1 bg-[#1A2A12] border-y border-[#35551F] text-[9px] text-[#8FBF66] uppercase tracking-wide">
+              GDTF Library · {filteredLibraryGdtf.length} real profiles
+            </div>
+            {filteredLibraryGdtf.slice(0, libraryVisibleLimit).map((entry, idx) => {
+              const defaultMode = entry.modes.find((m) => m.default) ?? entry.modes[0];
+              const modelName = entry.name.toLowerCase().startsWith(entry.manufacturer.toLowerCase())
+                ? entry.name.slice(entry.manufacturer.length).trim()
+                : entry.name;
+              const channelCounts = entry.modes.map((m) => m.channels).filter((n) => n > 0);
+              const modeSummary = entry.modes.length
+                ? `${entry.modes.length} mode${entry.modes.length > 1 ? 's' : ''}${channelCounts.length ? ` · ${channelCounts.join(' / ')} ch` : ''}`
+                : 'GDTF';
+              return (
+                <div
+                  key={entry.id}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData(
+                      'application/x-capture-gdtf',
+                      JSON.stringify({
+                        profileId: `catalog:${entry.id}`,
+                        modeName: defaultMode?.name ?? entry.defaultMode ?? undefined,
+                      }),
+                    );
+                    e.dataTransfer.effectAllowed = 'copy';
+                    setSmallDragImage(e, entry.name);
+                  }}
+                  title={`${entry.manufacturer} ${modelName}\nDrag into a viewport to load the real .gdtf profile`}
+                  className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
+                    idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
+                  }`}
+                >
+                  <div className="min-w-0 w-full">
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-1 py-0 bg-[#1D3316] border border-[#5A9E35] text-[9px] text-[#83D84C] shrink-0">
+                        GDTF
+                      </span>
+                      <span className="text-[9px] uppercase tracking-wide text-[#9AA1AC] truncate">
+                        {entry.manufacturer}
+                      </span>
+                    </div>
+                    <div
+                      className="text-[11px] leading-[13px] text-[#FFFFFF] font-medium break-words"
+                      title={modelName}
+                    >
+                      {modelName}
+                    </div>
+                    <div className="text-[10px] text-[#888888] truncate">
+                      {defaultMode?.name ?? 'Standard'} · {modeSummary}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {filteredLibraryGdtf.length > libraryVisibleLimit && (
+              <button
+                type="button"
+                onClick={() => setLibraryVisibleLimit((n) => n + 120)}
+                className="w-full h-[24px] bg-[#2E343C] hover:bg-[#3A414B] text-[10px] text-[#AAAAAA] cursor-pointer"
+              >
+                Show more GDTF profiles ({filteredLibraryGdtf.length - libraryVisibleLimit} remaining)
+              </button>
+            )}
+          </>
+        )}
+
+        {/* GDTF Profiles in Fixtures view */}
+        {filteredGdtf.map(({ profile }, idx) => {
+          const primaryMode = profile.dmxModes[0];
+          return (
+            <div
+              key={profile.id}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData(
+                  'application/x-capture-gdtf',
+                  JSON.stringify({ profileId: profile.id, modeName: primaryMode?.name }),
+                );
+                e.dataTransfer.effectAllowed = 'copy';
+                setSmallDragImage(e, profile.metadata.name);
+              }}
+              title={`${profile.metadata.manufacturer} ${profile.metadata.name}\nDrag into a viewport`}
+              className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
+                idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
+              }`}
+            >
+              <div className="min-w-0 w-full">
+                <div className="flex items-center gap-1.5">
+                  <span className="px-1 py-0 bg-[#1D3316] border border-[#5A9E35] text-[9px] text-[#83D84C] shrink-0">
+                    GDTF
+                  </span>
+                  <span className="text-[9px] uppercase tracking-wide text-[#9AA1AC] truncate">
+                    {profile.metadata.manufacturer}
+                  </span>
+                </div>
+                <div className="text-[11px] leading-[13px] text-[#FFFFFF] font-medium break-words">
+                  {profile.metadata.name}
+                </div>
+                <div className="text-[10px] text-[#888888] truncate">
+                  {primaryMode?.name ?? 'Standard'} · {primaryMode?.footprint ?? 0} ch
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Extracted GDTF Gobos when browsing Gobos */}
+        {gdtfGoboSlots.map((slot, i) => {
+          const texEntry = slot.mediaFile
+            ? resolveVfsAsset(slot.profileId, slot.mediaFile, ['.png', '.jpg', '.webp'])
+            : undefined;
+          return (
+            <div
+              key={`${slot.profileId}-${slot.slotName}-${i}`}
+              className="px-2.5 py-1.5 bg-[#20242B] hover:bg-[#343A43] flex items-center justify-between gap-2"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                {texEntry ? (
+                  <img
+                    src={texEntry.objectUrl}
+                    alt={slot.slotName}
+                    className="w-[18px] h-[18px] rounded-full border border-[#555] bg-[#000] shrink-0"
+                  />
+                ) : (
+                  <span className="w-[18px] h-[18px] rounded-full border border-[#555] flex items-center justify-center text-[9px]">
+                    ◎
+                  </span>
+                )}
+                <div className="min-w-0">
+                  <div className="text-[#FFFFFF] truncate">{slot.slotName}</div>
+                  <div className="text-[9px] text-[#83D84C] truncate">
+                    GDTF Wheel ({slot.profileName})
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                disabled={!hasSelectedFixtures}
+                onClick={() => onApplyGoboPreset(slot.slotName, slot.mediaFile)}
+                className="px-2 py-0.5 bg-[#363C45] hover:bg-[#545454] disabled:opacity-40 border border-[#2A2F37] text-[10px] shrink-0 cursor-pointer"
+              >
+                Apply
+              </button>
+            </div>
+          );
+        })}
+
+        {/* Real SketchUp truss models from the packaged library */}
+        {filteredSkpLibrary.length > 0 && (
+          <>
+            <div className="px-2.5 py-1 bg-[#2A1E10] border-y border-[#6E5228] text-[9px] text-[#E5B769] uppercase tracking-wide">
+              SketchUp Truss Library · {filteredSkpLibrary.length} models
+            </div>
+            {filteredSkpLibrary.slice(0, libraryVisibleLimit).map((entry, idx) => {
+              const modelName = entry.name.toLowerCase().startsWith(entry.manufacturer.toLowerCase())
+                ? entry.name.slice(entry.manufacturer.length).trim()
+                : entry.name;
+              const [length, width, height] = entry.dimensions;
+              return (
+                <div
+                  key={entry.id}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('application/x-capture-skp', `catalog:${entry.id}`);
+                    e.dataTransfer.effectAllowed = 'copy';
+                    setSmallDragImage(e, modelName, '#E5B769');
+                  }}
+                  title={`${entry.manufacturer} ${modelName}\n${length.toFixed(2)} m · ${width.toFixed(2)} × ${height.toFixed(2)} m section\nDrag into a viewport — ends snap magnetically`}
+                  className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
+                    idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
+                  }`}
+                >
+                  <div className="min-w-0 w-full">
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-1 py-0 bg-[#3A2A12] border border-[#8A6A32] text-[9px] text-[#E5B769] shrink-0">
+                        SKP
+                      </span>
+                      <span className="text-[9px] uppercase tracking-wide text-[#9AA1AC] truncate">
+                        {entry.manufacturer}
+                      </span>
+                    </div>
+                    <div
+                      className="text-[11px] leading-[13px] text-[#FFFFFF] font-medium break-words"
+                      title={modelName}
+                    >
+                      {modelName}
+                    </div>
+                    <div className="text-[10px] text-[#888888] truncate">
+                      {length.toFixed(2)} m · {width.toFixed(2)} × {height.toFixed(2)} m · magnetic ends
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {filteredSkpLibrary.length > libraryVisibleLimit && (
+              <button
+                type="button"
+                onClick={() => setLibraryVisibleLimit((n) => n + 120)}
+                className="w-full h-[24px] bg-[#2E343C] hover:bg-[#3A414B] text-[10px] text-[#AAAAAA] cursor-pointer"
+              >
+                Show more SketchUp trusses ({filteredSkpLibrary.length - libraryVisibleLimit} remaining)
+              </button>
+            )}
+          </>
+        )}
+
+        {/* Built-in Catalog Asset Rows */}
+        {filteredItems.map((item, idx) => (
+          <div
+            key={item.id}
+            draggable
+            onDragStart={(e) => {
+              e.dataTransfer.setData('application/x-capture-library-item', item.id);
+              e.dataTransfer.setData('application/x-capture-fixture', item.kind);
+              e.dataTransfer.effectAllowed = 'copy';
+              setSmallDragImage(e, item.name, item.kind === 'co2-jet' ? '#5AC8FA' : '#6BC938');
+            }}
+            title={`Drag ${item.name} into a viewport`}
+            className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
+              idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
+            }`}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              {activeCategory === 'Filters' && item.defaultColor && (
+                <span
+                  className="w-[14px] h-[14px] border border-[#000] shrink-0"
+                  style={{ backgroundColor: item.defaultColor }}
+                />
+              )}
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[#FFFFFF] font-medium truncate">{item.name}</span>
+                  <span className="text-[9px] text-[#9AA1AC] shrink-0">{item.manufacturer}</span>
+                </div>
+                <div className="text-[10px] text-[#888888] truncate">{item.description}</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              {activeCategory === 'Filters' && item.defaultColor && (
+                <button
+                  type="button"
+                  disabled={!hasSelectedFixtures}
+                  onClick={() => onApplyFilterColor(item.defaultColor!)}
+                  title={hasSelectedFixtures ? 'Apply gel to selected fixtures' : 'Select a fixture first'}
+                  className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] disabled:opacity-40 text-[10px] text-[#FFFFFF] cursor-pointer"
+                >
+                  Tint
+                </button>
+              )}
+              {activeCategory === 'Gobos' && item.goboName && (
+                <button
+                  type="button"
+                  disabled={!hasSelectedFixtures}
+                  onClick={() => onApplyGoboPreset(item.goboName!)}
+                  title={hasSelectedFixtures ? 'Apply gobo to selected fixtures' : 'Select a fixture first'}
+                  className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] disabled:opacity-40 text-[10px] text-[#FFFFFF] cursor-pointer"
+                >
+                  Apply
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+
+        {filteredItems.length === 0 && filteredGdtf.length === 0 && filteredSkpLibrary.length === 0 && gdtfGoboSlots.length === 0 && (
+          <div className="p-4 text-center text-[#9AA1AC] text-[11px]">
+            No matching assets in {activeCategory}. Adjust your search or right-hand filters.
+          </div>
+        )}
+      </div>
+    )}
+    </>
+  );
 
   return (
     <div className="flex-1 min-h-0 flex overflow-hidden bg-[#252A31] text-[#FFFFFF] text-[11px]">
@@ -472,21 +765,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
         <div className="h-[28px] shrink-0 bg-[#1E2229] border-b border-[#2A2F37] px-[8px] flex items-center justify-between gap-2">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-1 min-w-0 text-[11px] truncate">
-            <button
-              type="button"
-              onClick={() => setOpenFolder(null)}
-              className={`hover:text-[#FFFFFF] cursor-pointer ${
-                openFolder ? 'text-[#999999]' : 'text-[#FFFFFF] font-semibold'
-              }`}
-            >
-              {activeCategory}
-            </button>
-            {openFolder && !isFiltering && (
-              <>
-                <span className="text-[#666666]">›</span>
-                <span className="text-[#FFFFFF] font-semibold truncate">{openFolder}</span>
-              </>
-            )}
+            <span className="text-[#FFFFFF] font-semibold truncate">{activeCategory}</span>
             {isFiltering && (
               <>
                 <span className="text-[#666666]">›</span>
@@ -790,28 +1069,46 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
             </div>
           )}
 
-          {/* Folder List View (when browsing Manufacturers / Sub-Categories) */}
-          {showFolderView && (
+          {/* Manufacturer / sub-category tree: rows expand inline in place */}
+          {showFolderTree && (
             <div className="flex flex-col divide-y divide-[#2A2F37]">
-              {folders.map((folder, idx) => (
-                <button
-                  key={folder.name}
-                  type="button"
-                  onClick={() => setOpenFolder(folder.name)}
-                  className={`w-full h-[26px] px-2.5 flex items-center justify-between text-left hover:bg-[#333333] cursor-pointer ${
-                    idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
-                  }`}
-                >
-                  <span className="flex items-center gap-2 min-w-0">
-                    <FolderGlyphIcon className="w-[14px] h-[14px] text-[#A08F52] shrink-0" />
-                    <span className="text-[#FFFFFF] truncate">{folder.name}</span>
-                  </span>
-                  <span className="flex items-center gap-2 text-[10px] text-[#9AA1AC] shrink-0 tabular-nums">
-                    <span>{folder.count}</span>
-                    <span>›</span>
-                  </span>
-                </button>
-              ))}
+              {folders.map((folder, idx) => {
+                const expanded = openFolder === folder.name;
+                return (
+                  <div key={folder.name}>
+                    <button
+                      type="button"
+                      aria-expanded={expanded}
+                      onClick={() => setOpenFolder(expanded ? null : folder.name)}
+                      className={`w-full h-[26px] px-2.5 flex items-center justify-between text-left hover:bg-[#333333] cursor-pointer ${
+                        expanded ? 'bg-[#2E343C]' : idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2 min-w-0">
+                        <span
+                          className={`inline-block w-[10px] text-[12px] leading-none text-[#9AA1AC] transition-transform duration-150 ${
+                            expanded ? 'rotate-90' : ''
+                          }`}
+                        >
+                          ›
+                        </span>
+                        <FolderGlyphIcon className="w-[14px] h-[14px] text-[#A08F52] shrink-0" />
+                        <span className={`truncate ${expanded ? 'text-[#83D84C] font-semibold' : 'text-[#FFFFFF]'}`}>
+                          {folder.name}
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-2 text-[10px] text-[#9AA1AC] shrink-0 tabular-nums">
+                        <span>{folder.count}</span>
+                      </span>
+                    </button>
+                    {expanded && (
+                      <div className="ml-[18px] border-l border-[#3A414B]">
+                        {assetRows}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
 
@@ -883,293 +1180,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
             </div>
           )}
 
-          {/* Asset Rows (inside opened folder, or during live filter/search, or flat category) */}
-          {!showFolderView && activeCategory !== 'Built-In' && activeCategory !== 'Materials' && (
-            <div className="flex flex-col divide-y divide-[#2A2F37]">
-              {openFolder && !isFiltering && (
-                <button
-                  type="button"
-                  onClick={() => setOpenFolder(null)}
-                  className="w-full h-[23px] px-2.5 bg-[#1C1C1C] hover:bg-[#2C2C2C] flex items-center gap-1.5 text-left text-[10px] text-[#D4D9E0] cursor-pointer"
-                >
-                  <span>‹ Back to {activeCategory}</span>
-                </button>
-              )}
-
-              {/* Real GDTF archives from the packaged library */}
-              {filteredLibraryGdtf.length > 0 && (
-                <>
-                  <div className="px-2.5 py-1 bg-[#1A2A12] border-y border-[#35551F] text-[9px] text-[#8FBF66] uppercase tracking-wide">
-                    GDTF Library · {filteredLibraryGdtf.length} real profiles
-                  </div>
-                  {filteredLibraryGdtf.slice(0, libraryVisibleLimit).map((entry, idx) => {
-                    const defaultMode = entry.modes.find((m) => m.default) ?? entry.modes[0];
-                    const modelName = entry.name.toLowerCase().startsWith(entry.manufacturer.toLowerCase())
-                      ? entry.name.slice(entry.manufacturer.length).trim()
-                      : entry.name;
-                    const channelCounts = entry.modes.map((m) => m.channels).filter((n) => n > 0);
-                    const modeSummary = entry.modes.length
-                      ? `${entry.modes.length} mode${entry.modes.length > 1 ? 's' : ''}${channelCounts.length ? ` · ${channelCounts.join(' / ')} ch` : ''}`
-                      : 'GDTF';
-                    return (
-                      <div
-                        key={entry.id}
-                        draggable
-                        onDragStart={(e) => {
-                          e.dataTransfer.setData(
-                            'application/x-capture-gdtf',
-                            JSON.stringify({
-                              profileId: `catalog:${entry.id}`,
-                              modeName: defaultMode?.name ?? entry.defaultMode ?? undefined,
-                            }),
-                          );
-                          e.dataTransfer.effectAllowed = 'copy';
-                          setSmallDragImage(e, entry.name);
-                        }}
-                        title={`${entry.manufacturer} ${modelName}\nDrag into a viewport to load the real .gdtf profile`}
-                        className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
-                          idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
-                        }`}
-                      >
-                        <div className="min-w-0 w-full">
-                          <div className="flex items-center gap-1.5">
-                            <span className="px-1 py-0 bg-[#1D3316] border border-[#5A9E35] text-[9px] text-[#83D84C] shrink-0">
-                              GDTF
-                            </span>
-                            <span className="text-[9px] uppercase tracking-wide text-[#9AA1AC] truncate">
-                              {entry.manufacturer}
-                            </span>
-                          </div>
-                          <div
-                            className="text-[11px] leading-[13px] text-[#FFFFFF] font-medium break-words"
-                            title={modelName}
-                          >
-                            {modelName}
-                          </div>
-                          <div className="text-[10px] text-[#888888] truncate">
-                            {defaultMode?.name ?? 'Standard'} · {modeSummary}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {filteredLibraryGdtf.length > libraryVisibleLimit && (
-                    <button
-                      type="button"
-                      onClick={() => setLibraryVisibleLimit((n) => n + 120)}
-                      className="w-full h-[24px] bg-[#2E343C] hover:bg-[#3A414B] text-[10px] text-[#AAAAAA] cursor-pointer"
-                    >
-                      Show more GDTF profiles ({filteredLibraryGdtf.length - libraryVisibleLimit} remaining)
-                    </button>
-                  )}
-                </>
-              )}
-
-              {/* GDTF Profiles in Fixtures view */}
-              {filteredGdtf.map(({ profile }, idx) => {
-                const primaryMode = profile.dmxModes[0];
-                return (
-                  <div
-                    key={profile.id}
-                    draggable
-                    onDragStart={(e) => {
-                      e.dataTransfer.setData(
-                        'application/x-capture-gdtf',
-                        JSON.stringify({ profileId: profile.id, modeName: primaryMode?.name }),
-                      );
-                      e.dataTransfer.effectAllowed = 'copy';
-                      setSmallDragImage(e, profile.metadata.name);
-                    }}
-                    title={`${profile.metadata.manufacturer} ${profile.metadata.name}\nDrag into a viewport`}
-                    className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
-                      idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
-                    }`}
-                  >
-                    <div className="min-w-0 w-full">
-                      <div className="flex items-center gap-1.5">
-                        <span className="px-1 py-0 bg-[#1D3316] border border-[#5A9E35] text-[9px] text-[#83D84C] shrink-0">
-                          GDTF
-                        </span>
-                        <span className="text-[9px] uppercase tracking-wide text-[#9AA1AC] truncate">
-                          {profile.metadata.manufacturer}
-                        </span>
-                      </div>
-                      <div className="text-[11px] leading-[13px] text-[#FFFFFF] font-medium break-words">
-                        {profile.metadata.name}
-                      </div>
-                      <div className="text-[10px] text-[#888888] truncate">
-                        {primaryMode?.name ?? 'Standard'} · {primaryMode?.footprint ?? 0} ch
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* Extracted GDTF Gobos when browsing Gobos */}
-              {gdtfGoboSlots.map((slot, i) => {
-                const texEntry = slot.mediaFile
-                  ? resolveVfsAsset(slot.profileId, slot.mediaFile, ['.png', '.jpg', '.webp'])
-                  : undefined;
-                return (
-                  <div
-                    key={`${slot.profileId}-${slot.slotName}-${i}`}
-                    className="px-2.5 py-1.5 bg-[#20242B] hover:bg-[#343A43] flex items-center justify-between gap-2"
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      {texEntry ? (
-                        <img
-                          src={texEntry.objectUrl}
-                          alt={slot.slotName}
-                          className="w-[18px] h-[18px] rounded-full border border-[#555] bg-[#000] shrink-0"
-                        />
-                      ) : (
-                        <span className="w-[18px] h-[18px] rounded-full border border-[#555] flex items-center justify-center text-[9px]">
-                          ◎
-                        </span>
-                      )}
-                      <div className="min-w-0">
-                        <div className="text-[#FFFFFF] truncate">{slot.slotName}</div>
-                        <div className="text-[9px] text-[#83D84C] truncate">
-                          GDTF Wheel ({slot.profileName})
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      disabled={!hasSelectedFixtures}
-                      onClick={() => onApplyGoboPreset(slot.slotName, slot.mediaFile)}
-                      className="px-2 py-0.5 bg-[#363C45] hover:bg-[#545454] disabled:opacity-40 border border-[#2A2F37] text-[10px] shrink-0 cursor-pointer"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                );
-              })}
-
-              {/* Real SketchUp truss models from the packaged library */}
-              {filteredSkpLibrary.length > 0 && (
-                <>
-                  <div className="px-2.5 py-1 bg-[#2A1E10] border-y border-[#6E5228] text-[9px] text-[#E5B769] uppercase tracking-wide">
-                    SketchUp Truss Library · {filteredSkpLibrary.length} models
-                  </div>
-                  {filteredSkpLibrary.slice(0, libraryVisibleLimit).map((entry, idx) => {
-                    const modelName = entry.name.toLowerCase().startsWith(entry.manufacturer.toLowerCase())
-                      ? entry.name.slice(entry.manufacturer.length).trim()
-                      : entry.name;
-                    const [length, width, height] = entry.dimensions;
-                    return (
-                      <div
-                        key={entry.id}
-                        draggable
-                        onDragStart={(e) => {
-                          e.dataTransfer.setData('application/x-capture-skp', `catalog:${entry.id}`);
-                          e.dataTransfer.effectAllowed = 'copy';
-                          setSmallDragImage(e, modelName, '#E5B769');
-                        }}
-                        title={`${entry.manufacturer} ${modelName}\n${length.toFixed(2)} m · ${width.toFixed(2)} × ${height.toFixed(2)} m section\nDrag into a viewport — ends snap magnetically`}
-                        className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
-                          idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
-                        }`}
-                      >
-                        <div className="min-w-0 w-full">
-                          <div className="flex items-center gap-1.5">
-                            <span className="px-1 py-0 bg-[#3A2A12] border border-[#8A6A32] text-[9px] text-[#E5B769] shrink-0">
-                              SKP
-                            </span>
-                            <span className="text-[9px] uppercase tracking-wide text-[#9AA1AC] truncate">
-                              {entry.manufacturer}
-                            </span>
-                          </div>
-                          <div
-                            className="text-[11px] leading-[13px] text-[#FFFFFF] font-medium break-words"
-                            title={modelName}
-                          >
-                            {modelName}
-                          </div>
-                          <div className="text-[10px] text-[#888888] truncate">
-                            {length.toFixed(2)} m · {width.toFixed(2)} × {height.toFixed(2)} m · magnetic ends
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {filteredSkpLibrary.length > libraryVisibleLimit && (
-                    <button
-                      type="button"
-                      onClick={() => setLibraryVisibleLimit((n) => n + 120)}
-                      className="w-full h-[24px] bg-[#2E343C] hover:bg-[#3A414B] text-[10px] text-[#AAAAAA] cursor-pointer"
-                    >
-                      Show more SketchUp trusses ({filteredSkpLibrary.length - libraryVisibleLimit} remaining)
-                    </button>
-                  )}
-                </>
-              )}
-
-              {/* Built-in Catalog Asset Rows */}
-              {filteredItems.map((item, idx) => (
-                <div
-                  key={item.id}
-                  draggable
-                  onDragStart={(e) => {
-                    e.dataTransfer.setData('application/x-capture-library-item', item.id);
-                    e.dataTransfer.setData('application/x-capture-fixture', item.kind);
-                    e.dataTransfer.effectAllowed = 'copy';
-                    setSmallDragImage(e, item.name, item.kind === 'co2-jet' ? '#5AC8FA' : '#6BC938');
-                  }}
-                  title={`Drag ${item.name} into a viewport`}
-                  className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
-                    idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    {activeCategory === 'Filters' && item.defaultColor && (
-                      <span
-                        className="w-[14px] h-[14px] border border-[#000] shrink-0"
-                        style={{ backgroundColor: item.defaultColor }}
-                      />
-                    )}
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[#FFFFFF] font-medium truncate">{item.name}</span>
-                        <span className="text-[9px] text-[#9AA1AC] shrink-0">{item.manufacturer}</span>
-                      </div>
-                      <div className="text-[10px] text-[#888888] truncate">{item.description}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    {activeCategory === 'Filters' && item.defaultColor && (
-                      <button
-                        type="button"
-                        disabled={!hasSelectedFixtures}
-                        onClick={() => onApplyFilterColor(item.defaultColor!)}
-                        title={hasSelectedFixtures ? 'Apply gel to selected fixtures' : 'Select a fixture first'}
-                        className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] disabled:opacity-40 text-[10px] text-[#FFFFFF] cursor-pointer"
-                      >
-                        Tint
-                      </button>
-                    )}
-                    {activeCategory === 'Gobos' && item.goboName && (
-                      <button
-                        type="button"
-                        disabled={!hasSelectedFixtures}
-                        onClick={() => onApplyGoboPreset(item.goboName!)}
-                        title={hasSelectedFixtures ? 'Apply gobo to selected fixtures' : 'Select a fixture first'}
-                        className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] disabled:opacity-40 text-[10px] text-[#FFFFFF] cursor-pointer"
-                      >
-                        Apply
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {filteredItems.length === 0 && filteredGdtf.length === 0 && filteredSkpLibrary.length === 0 && gdtfGoboSlots.length === 0 && (
-                <div className="p-4 text-center text-[#9AA1AC] text-[11px]">
-                  No matching assets in {activeCategory}. Adjust your search or right-hand filters.
-                </div>
-              )}
-            </div>
-          )}
+            {!showFolderTree && assetRows}
         </div>
       </div>
 
