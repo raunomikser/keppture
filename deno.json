@@ -1,0 +1,10 @@
+{
+  "nodeModulesDir": "auto",
+  "tasks": {
+    "install": "deno install --node-modules-dir=auto",
+    "dev": "deno run -A npm:vite --port=3000 --host=0.0.0.0",
+    "build": "deno run -A npm:vite build",
+    "preview": "deno run -A npm:vite preview",
+    "check": "deno run -A npm:typescript@7.0.2/tsc --noEmit -p tsconfig.json"
+  }
+}
