@@ -67,6 +67,15 @@ export type BuiltInGroup =
   | 'Effects'
   | 'Visualisation';
 
+export type ActiveBuiltInTool = 'Distance' | null;
+
+/** Transient two-click measurement; never serialized into a project. */
+export interface DistanceMeasurement {
+  start: [number, number, number];
+  end: [number, number, number] | null;
+  planeNormal: [number, number, number];
+}
+
 export interface SceneObject {
   id: string;
   name: string;

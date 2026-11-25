@@ -4,6 +4,7 @@ import { GdtfProfile } from '../gdtf/types';
 import { getSkpModel, SkpParsedModel } from '../skp/skpParser';
 import { parseSmokePatch } from '../three/smokeSimulation';
 import {
+  ActiveBuiltInTool,
   CameraPreset,
   DesignCategory,
   FixtureGroup,
@@ -57,6 +58,8 @@ interface ProjectPanelProps {
   onToggleDmxSweep: () => void;
   onWriteDmxChannel: (universe: number, baseAddr: number, offsets: number[], raw: number) => void;
   recentCatalogIds: string[];
+  activeTool?: ActiveBuiltInTool;
+  onActivateTool?: (tool: ActiveBuiltInTool) => void;
   onPlaceCatalogItem: (item: LibraryCatalogItem, position?: [number, number, number]) => void;
   onPlaceGdtfProfile: (profile: GdtfProfile, modeName?: string, position?: [number, number, number]) => void;
   onPlaceSkpModel: (
@@ -135,6 +138,8 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
   onToggleDmxSweep,
   onWriteDmxChannel,
   recentCatalogIds,
+  activeTool,
+  onActivateTool,
   onPlaceCatalogItem,
   onPlaceGdtfProfile,
   onPlaceSkpModel,
@@ -1150,6 +1155,8 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
             recentCatalogIds={recentCatalogIds}
             hasSelectedFixtures={anyFixtureSelected}
             hasSelectedMaterialTargets={selectedObjects.some((o) => o.kind !== 'smoke-volume')}
+            activeTool={activeTool}
+            onActivateTool={onActivateTool}
             onPlaceCatalogItem={onPlaceCatalogItem}
             onPlaceGdtfProfile={onPlaceGdtfProfile}
             onPlaceSkpModel={onPlaceSkpModel}

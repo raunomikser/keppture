@@ -29,9 +29,12 @@ import {
   computeGhostBoxMetrics,
   TransformGhostItem,
 } from '../three/ghostPreview';
+import { buildDistanceMeasurementGroup } from '../three/distanceMeasurement';
 import { buildSnapIndicator, findTrussSnap } from '../three/trussSnap';
 import {
+  ActiveBuiltInTool,
   CameraPreset,
+  DistanceMeasurement,
   LayerItem,
   ObjectKind,
   ProjectionType,
@@ -63,6 +66,12 @@ interface CadViewportProps {
   } | null;
   transformGhostItems?: TransformGhostItem[] | null;
   onTransformGhostChange?: (items: TransformGhostItem[] | null) => void;
+  activeTool?: ActiveBuiltInTool;
+  measurement?: DistanceMeasurement | null;
+  onMeasurePoint?: (
+    point: [number, number, number],
+    planeNormal: [number, number, number],
+  ) => void;
   onSelectObject: (id: string | null, mode?: 'replace' | 'toggle') => void;
   onSelectMultiple?: (ids: string[], additive: boolean) => void;
   onMoveObjects: (moves: Array<{ id: string; position: [number, number, number] }>) => void;
@@ -426,6 +435,9 @@ export const CadViewport: React.FC<CadViewportProps> = ({
   cameraCommand,
   transformGhostItems,
   onTransformGhostChange,
+  activeTool = null,
+  measurement = null,
+  onMeasurePoint,
   onSelectObject,
   onSelectMultiple,
   onMoveObjects,
@@ -489,6 +501,13 @@ export const CadViewport: React.FC<CadViewportProps> = ({
   const [lensNodes, setLensNodes] = useState<
     Array<{ id: string; x: number; y: number; color: string; intensity: number }>
   >([]);
+  const [measurementPreview, setMeasurementPreview] = useState<[number, number, number] | null>(null);
+  const [measurementLabel, setMeasurementLabel] = useState<{
+    x: number;
+    y: number;
+    text: string;
+    visible: boolean;
+  }>({ x: 0, y: 0, text: '', visible: false });
   const [vpSize, setVpSize] = useState<{ w: number; h: number }>({ w: 600, h: 400 });
   const [flickerGain, setFlickerGain] = useState(1);
   const [contextLost, setContextLost] = useState(false);
@@ -541,6 +560,12 @@ export const CadViewport: React.FC<CadViewportProps> = ({
   onDropFilesRef.current = onDropExternalFiles;
   const onUpdateObjectsRef = useRef(onUpdateObjects);
   onUpdateObjectsRef.current = onUpdateObjects;
+  const activeToolRef = useRef(activeTool);
+  activeToolRef.current = activeTool;
+  const measurementRef = useRef(measurement);
+  measurementRef.current = measurement;
+  const measurementPreviewRef = useRef(measurementPreview);
+  measurementPreviewRef.current = measurementPreview;
 
   // Mutable Three.js state ref
   const threeRef = useRef<{
@@ -557,6 +582,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
     gizmoGroup: THREE.Group | null;
     ghostGroup: THREE.Group | null;
     snapGroup: THREE.Group | null;
+    measurementGroup: THREE.Group | null;
     gdtfRigMap: Map<string, GdtfRigHandle>;
     smokeRigMap: Map<string, LiveSmokeHandle>;
     smokeDriftPhase: number;
@@ -672,6 +698,12 @@ export const CadViewport: React.FC<CadViewportProps> = ({
 
     const objectsGroup = new THREE.Group();
     scene.add(objectsGroup);
+
+    // Temporary Distance measurement lives on the scene, outside objectsGroup,
+    // so it is never selectable, dragged, duplicated, deleted, or serialized.
+    const measurementGroup = new THREE.Group();
+    measurementGroup.visible = false;
+    scene.add(measurementGroup);
 
     let frameId = 0;
     let renderBusy = false;
@@ -806,6 +838,31 @@ export const CadViewport: React.FC<CadViewportProps> = ({
         });
       } else {
         setOriginScreenPos((prev) => (prev.visible ? { ...prev, visible: false } : prev));
+      }
+
+      // Distance label follows the measurement midpoint in every viewport.
+      const measure = measurementRef.current;
+      if (activeToolRef.current === 'Distance' && measure) {
+        const endPoint = measure.end ?? measurementPreviewRef.current;
+        const midX = endPoint ? (measure.start[0] + endPoint[0]) / 2 : measure.start[0];
+        const midY = endPoint ? (measure.start[1] + endPoint[1]) / 2 : measure.start[1];
+        const midZ = endPoint ? (measure.start[2] + endPoint[2]) / 2 : measure.start[2];
+        _v2.set(midX, midY, midZ).project(cam);
+        const distance = endPoint
+          ? Math.hypot(
+              endPoint[0] - measure.start[0],
+              endPoint[1] - measure.start[1],
+              endPoint[2] - measure.start[2],
+            )
+          : 0;
+        setMeasurementLabel({
+          x: ((_v2.x + 1) / 2) * st.width,
+          y: ((-_v2.y + 1) / 2) * st.height,
+          text: endPoint ? `${distance.toFixed(2)} m` : 'Click second point',
+          visible: _v2.z >= -1 && _v2.z <= 1,
+        });
+      } else {
+        setMeasurementLabel((prev) => (prev.visible ? { ...prev, visible: false } : prev));
       }
 
       // Update Fixture Information labels if enabled
@@ -952,6 +1009,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
       gizmoGroup: null,
       ghostGroup: null,
       snapGroup: null,
+      measurementGroup,
       gdtfRigMap: new Map<string, GdtfRigHandle>(),
       smokeRigMap: new Map<string, LiveSmokeHandle>(),
       smokeDriftPhase: 0,
@@ -1349,6 +1407,30 @@ export const CadViewport: React.FC<CadViewportProps> = ({
     st.requestRender();
   }, [transformGhostItems]);
 
+  // Distance measurement is rebuilt only when its two points change.
+  useEffect(() => {
+    if (!measurement || measurement.end) setMeasurementPreview(null);
+  }, [measurement]);
+
+  useEffect(() => {
+    const st = threeRef.current;
+    if (!st) return;
+
+    const group = st.measurementGroup;
+    if (!group) return;
+
+    disposeGroupResources(group);
+    group.clear();
+
+    const visible = activeTool === 'Distance' && Boolean(measurement);
+    const end = measurement?.end ?? measurementPreview;
+    if (visible && measurement) {
+      group.add(buildDistanceMeasurementGroup(measurement.start, end, !measurement.end));
+    }
+    group.visible = visible;
+    st.requestRender();
+  }, [measurement, measurementPreview, activeTool]);
+
   // Zero-rebuild real-time DMX stream update for mounted GDTF fixtures & Patched Smoke Volumes
   useEffect(() => {
     const st = threeRef.current;
@@ -1689,6 +1771,46 @@ export const CadViewport: React.FC<CadViewportProps> = ({
     return hit ? out : null;
   }, []);
 
+  // Prefer real geometry under the cursor; otherwise fall back to the active
+  // CAD plane, keeping both measurement points on the same plane.
+  const pickMeasurementPoint = useCallback(
+    (
+      clientX: number,
+      clientY: number,
+      planeNormal?: [number, number, number],
+      planePoint?: [number, number, number],
+    ): [number, number, number] | null => {
+      const st = threeRef.current;
+      const mount = canvasMountRef.current;
+      if (!st || !mount) return null;
+
+      const rect = mount.getBoundingClientRect();
+      _ndc.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      _ndc.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      _raycaster.setFromCamera(_ndc, st.activeCam);
+
+      const rawHits = _raycaster.intersectObjects(st.objectsGroup.children, true);
+      const hit = rawHits.find(
+        (h) => !h.object.userData.isVolumetricBeam && !h.object.userData.isSelectionHelper,
+      );
+      if (hit) {
+        return [hit.point.x, hit.point.y, hit.point.z];
+      }
+
+      const normal = planeNormal
+        ? new THREE.Vector3(planeNormal[0], planeNormal[1], planeNormal[2])
+        : st.activeCam.getWorldDirection(new THREE.Vector3());
+      const anchor = planePoint
+        ? new THREE.Vector3(planePoint[0], planePoint[1], planePoint[2])
+        : new THREE.Vector3(0, 0, 0);
+      _plane.setFromNormalAndCoplanarPoint(normal, anchor);
+      const out = new THREE.Vector3();
+      const planeHit = _raycaster.ray.intersectPlane(_plane, out);
+      return planeHit ? [out.x, out.y, out.z] : null;
+    },
+    [],
+  );
+
   const sampleGizmoWorldPoint = useCallback(
     (clientX: number, clientY: number, origin: THREE.Vector3, axis: GizmoAxis): THREE.Vector3 | null => {
       const st = threeRef.current;
@@ -1836,6 +1958,36 @@ export const CadViewport: React.FC<CadViewportProps> = ({
         dragStartWorld: null,
         draggedItems: [],
       };
+      return;
+    }
+
+    // Distance tool consumes plain left-clicks in any view; orbit/pan still win.
+    if (
+      activeTool === 'Distance' &&
+      onMeasurePoint &&
+      e.button === 0 &&
+      !e.metaKey &&
+      !e.ctrlKey &&
+      !e.shiftKey
+    ) {
+      const camNormal = st.activeCam.getWorldDirection(new THREE.Vector3());
+      const planeNormal: [number, number, number] = [camNormal.x, camNormal.y, camNormal.z];
+      const point =
+        measurement && !measurement.end
+          ? pickMeasurementPoint(
+              e.clientX,
+              e.clientY,
+              measurement.planeNormal,
+              measurement.start,
+            )
+          : pickMeasurementPoint(e.clientX, e.clientY);
+      if (point) onMeasurePoint(point, planeNormal);
+      setMeasurementPreview(null);
+      pointerStateRef.current.mode = 'none';
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+      st.requestRender();
       return;
     }
 
@@ -1995,6 +2147,23 @@ export const CadViewport: React.FC<CadViewportProps> = ({
     const mount = canvasMountRef.current;
 
     if (ps.mode === 'none') {
+      if (activeTool === 'Distance' && measurement && !measurement.end) {
+        const point = pickMeasurementPoint(
+          e.clientX,
+          e.clientY,
+          measurement.planeNormal,
+          measurement.start,
+        );
+        setMeasurementPreview((prev) => {
+          if (prev === point) return prev;
+          if (prev && point && prev[0] === point[0] && prev[1] === point[1] && prev[2] === point[2]) {
+            return prev;
+          }
+          return point;
+        });
+        if (hoveredGizmoAxis !== null) setHoveredGizmoAxis(null);
+        return;
+      }
       if (st && mount && st.gizmoGroup) {
         const rect = mount.getBoundingClientRect();
         _ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -2705,6 +2874,23 @@ export const CadViewport: React.FC<CadViewportProps> = ({
           }}
         >
           <OriginCloudIcon className="w-[18px] h-[12px]" />
+        </div>
+      )}
+
+      {/* Distance measurement readout follows the line in every viewport. */}
+      {measurementLabel.visible && (
+        <div
+          className="pointer-events-none absolute z-20 rounded-[5px] px-1.5 py-0.5 text-[10px] leading-none tabular-nums whitespace-nowrap border shadow-sm"
+          style={{
+            left: `${measurementLabel.x}px`,
+            top: `${measurementLabel.y - 14}px`,
+            transform: 'translate(-50%, -100%)',
+            color: isPlotView ? '#075985' : '#5AC8FA',
+            backgroundColor: isPlotView ? 'rgba(255,255,255,0.94)' : 'rgba(10,12,16,0.9)',
+            borderColor: '#5AC8FA',
+          }}
+        >
+          {measurementLabel.text}
         </div>
       )}
 

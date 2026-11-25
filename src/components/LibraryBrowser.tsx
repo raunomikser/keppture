@@ -33,6 +33,7 @@ import {
   getMaterialPreviewUrl,
 } from '../three/materialsLibrary';
 import {
+  ActiveBuiltInTool,
   BuiltInGroup,
   GdtfLibraryEntry,
   LibraryCatalogItem,
@@ -87,6 +88,8 @@ interface LibraryBrowserProps {
   recentCatalogIds: string[];
   hasSelectedFixtures: boolean;
   hasSelectedMaterialTargets?: boolean;
+  activeTool?: ActiveBuiltInTool;
+  onActivateTool?: (tool: ActiveBuiltInTool) => void;
   onPlaceCatalogItem: (item: LibraryCatalogItem, position?: [number, number, number]) => void;
   onPlaceGdtfProfile: (profile: GdtfProfile, modeName?: string, position?: [number, number, number]) => void;
   onPlaceSkpModel: (
@@ -109,6 +112,8 @@ interface BuiltInEntry {
   icon: React.FC<{ className?: string }>;
   /** Present when the entry places a real scene object. */
   catalogId?: string;
+  /** Present when the entry toggles an interactive viewport tool. */
+  tool?: 'Distance';
 }
 
 const BUILT_IN_GROUPS: Array<{
@@ -118,7 +123,7 @@ const BUILT_IN_GROUPS: Array<{
   {
     title: 'Dimensioning',
     items: [
-      { label: 'Distance', icon: Ruler },
+      { label: 'Distance', icon: Ruler, tool: 'Distance' },
       { label: 'Angle', icon: Triangle },
       { label: 'Line', icon: Minus },
       { label: 'Ruler', icon: Ruler },
@@ -205,6 +210,8 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
   recentCatalogIds,
   hasSelectedFixtures,
   hasSelectedMaterialTargets = false,
+  activeTool = null,
+  onActivateTool,
   onPlaceCatalogItem,
   onPlaceGdtfProfile,
   onPlaceSkpModel,
@@ -851,15 +858,18 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                       const item = entry.catalogId
                         ? LIBRARY_CATALOG.find((c) => c.id === entry.catalogId)
                         : undefined;
+                      const isActiveTool = Boolean(entry.tool && activeTool === entry.tool);
                       return (
                         <button
                           key={entry.label}
                           type="button"
                           draggable={Boolean(item)}
                           title={
-                            item
-                              ? `Drag ${entry.label} into a viewport`
-                              : `${entry.label} — not implemented yet`
+                            entry.tool
+                              ? `${entry.label} — click to activate, then click two points in any view (Esc to cancel)`
+                              : item
+                                ? `Drag ${entry.label} into a viewport`
+                                : `${entry.label} — not implemented yet`
                           }
                           onDragStart={(e) => {
                             if (!item) return;
@@ -868,15 +878,29 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                             e.dataTransfer.effectAllowed = 'copy';
                             setSmallDragImage(e, item.name, '#5AC8FA');
                           }}
+                          onClick={
+                            entry.tool
+                              ? () => onActivateTool?.(isActiveTool ? null : entry.tool!)
+                              : undefined
+                          }
                           className={`h-[24px] px-2 flex items-center gap-2 text-left ${
                             item
                               ? 'text-[#FFFFFF] hover:bg-[#333333] cursor-grab active:cursor-grabbing'
-                              : 'text-[#A5A5A5] hover:bg-[#2E2E2E] cursor-default'
+                              : entry.tool
+                                ? isActiveTool
+                                  ? 'bg-[#1D3316] text-[#83D84C] cursor-pointer'
+                                  : 'text-[#FFFFFF] hover:bg-[#2E343C] cursor-pointer'
+                                : 'text-[#A5A5A5] hover:bg-[#2E2E2E] cursor-default'
                           }`}
                         >
                           <Icon className="w-[14px] h-[14px] shrink-0" />
                           <span>{entry.label}</span>
                           {item && <span className="ml-auto text-[9px] text-[#83D84C]">Drag</span>}
+                          {entry.tool && (
+                            <span className={`ml-auto text-[9px] ${isActiveTool ? 'text-[#83D84C]' : 'text-[#9AA1AC]'}`}>
+                              {isActiveTool ? 'Active' : 'Tool'}
+                            </span>
+                          )}
                         </button>
                       );
                     })}

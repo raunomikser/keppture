@@ -41,8 +41,10 @@ import { TransformGhostItem } from './three/ghostPreview';
 import { findTrussSnap } from './three/trussSnap';
 import { findCaptureMaterial } from './three/materialsLibrary';
 import {
+  ActiveBuiltInTool,
   CameraPreset,
   DesignCategory,
+  DistanceMeasurement,
   GdtfLibraryEntry,
   LayerItem,
   LibraryCatalogItem,
@@ -135,6 +137,8 @@ export default function App() {
   const [objects, setObjects] = useState<SceneObject[]>(INITIAL_SCENE_OBJECTS);
   const [selectedObjectIds, setSelectedObjectIds] = useState<string[]>([]);
   const [transformGhostItems, setTransformGhostItems] = useState<TransformGhostItem[] | null>(null);
+  const [activeTool, setActiveTool] = useState<ActiveBuiltInTool>(null);
+  const [measurement, setMeasurement] = useState<DistanceMeasurement | null>(null);
   const [metadata, setMetadata] = useState<ProjectMetadata>(INITIAL_PROJECT_METADATA);
   const [layers, setLayers] = useState<LayerItem[]>(INITIAL_LAYERS);
   const [snapshots, setSnapshots] = useState<LightingSnapshot[]>(INITIAL_SNAPSHOTS);
@@ -181,6 +185,28 @@ export default function App() {
     window.setTimeout(() => {
       setToastMsg((curr) => (curr === msg ? null : curr));
     }, 3200);
+  }, []);
+
+  const handleActivateTool = useCallback((tool: ActiveBuiltInTool) => {
+    setActiveTool(tool);
+    if (!tool) setMeasurement(null);
+  }, []);
+
+  const handleMeasurePoint = useCallback(
+    (point: [number, number, number], planeNormal: [number, number, number]) => {
+      setMeasurement((prev) => {
+        if (!prev || prev.end) {
+          return { start: point, end: null, planeNormal };
+        }
+        return { ...prev, end: point };
+      });
+    },
+    [],
+  );
+
+  const handleClearMeasurement = useCallback(() => {
+    setMeasurement(null);
+    setActiveTool(null);
   }, []);
 
   useEffect(() => {
@@ -1330,11 +1356,19 @@ export default function App() {
         handleDeleteObjects(selectedObjectIds);
       } else if (e.key === 'Escape') {
         setSelectedObjectIds([]);
+        handleClearMeasurement();
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [selectedObjectIds, handleDeleteObjects, handleSaveProject, handleSaveProjectAs, handleNewProject]);
+  }, [
+    selectedObjectIds,
+    handleDeleteObjects,
+    handleSaveProject,
+    handleSaveProjectAs,
+    handleNewProject,
+    handleClearMeasurement,
+  ]);
 
   const toggleMaximize = (pane: PaneId) => {
     setMaximizedPane((curr) => (curr === pane ? null : pane));
@@ -1385,6 +1419,8 @@ export default function App() {
           onToggleDmxSweep={() => setDmxSweepActive((v) => !v)}
           onWriteDmxChannel={handleWriteDmxChannel}
           recentCatalogIds={recentCatalogIds}
+          activeTool={activeTool}
+          onActivateTool={handleActivateTool}
           onPlaceCatalogItem={placeCatalogItem}
           onPlaceGdtfProfile={handlePlaceGdtfProfile}
           onPlaceSkpModel={handlePlaceSkpModel}
@@ -1422,6 +1458,9 @@ export default function App() {
         cameraCommand={cameraCommand}
         transformGhostItems={transformGhostItems}
         onTransformGhostChange={setTransformGhostItems}
+        activeTool={activeTool}
+        measurement={measurement}
+        onMeasurePoint={handleMeasurePoint}
         onSelectObject={handleSelectObject}
         onSelectMultiple={handleSelectMultiple}
         onMoveObjects={handleMoveObjects}
