@@ -38,14 +38,14 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
   };
 
   const renderSectionHeader = (key: SectionKey, title: string) => (
-    <tr className="bg-[#313131] border-y border-[#2A2F37]">
+    <tr className="bg-[#313131] border-y border-[#2A3A54]">
       <td colSpan={4} className="p-0">
         <button
           type="button"
           onClick={() => toggleSection(key)}
-          className="w-full px-2 py-[3px] flex items-center gap-1.5 text-left text-[11px] font-semibold text-[#EBEEF2] hover:bg-[#3A414B] cursor-pointer"
+          className="w-full px-2 py-[3px] flex items-center gap-1.5 text-left text-[11px] font-semibold text-[#EDF2F8] hover:bg-[#3B4D69] cursor-pointer"
         >
-          <span className="text-[9px] text-[#A3AAB5] w-3">
+          <span className="text-[9px] text-[#B2BECE] w-3">
             {collapsed[key] ? '▸' : '▾'}
           </span>
           <span>{title}</span>
@@ -54,24 +54,24 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
     </tr>
   );
 
-  const cellCls = 'px-1.5 py-[2px] border-l border-[#141414] bg-[#1E1E1E] align-middle';
+  const cellCls = 'px-1.5 py-[2px] border-l border-[#1A2740] bg-[#1B2940] align-middle';
   const selectCls =
-    'w-full h-[18px] px-1 bg-[#262626] border border-[#141414] text-[10px] text-[#FFFFFF] focus:outline-none focus:border-[#857431] cursor-pointer';
+    'w-full h-[18px] px-1 bg-[#25344E] border border-[#1A2740] text-[10px] text-[#F5F8FC] focus:outline-none focus:border-[#857431] cursor-pointer';
   const numInputCls =
-    'w-full h-[18px] px-1 bg-[#262626] border border-[#141414] text-[10px] text-[#FFFFFF] tabular-nums text-right focus:outline-none focus:border-[#857431]';
+    'w-full h-[18px] px-1 bg-[#25344E] border border-[#1A2740] text-[10px] text-[#F5F8FC] tabular-nums text-right focus:outline-none focus:border-[#857431]';
 
   return (
-    <div className="w-full overflow-x-auto capture-scroll border border-[#2A2F37] bg-[#1B1F25]">
+    <div className="w-full overflow-x-auto capture-scroll border border-[#2A3A54] bg-[#172236]">
       <table className="w-full min-w-[430px] border-collapse text-[10px] leading-tight">
-        <thead className="sticky top-0 z-10 bg-[#2D2D2D] border-b border-[#2A2F37]">
+        <thead className="sticky top-0 z-10 bg-[#2D2D2D] border-b border-[#2A3A54]">
           <tr>
-            <th className="w-[146px] min-w-[136px] px-2 py-[4px] text-left font-medium text-[#D4D9E0]">
+            <th className="w-[146px] min-w-[136px] px-2 py-[4px] text-left font-medium text-[#D7E0EE]">
               Property
             </th>
             {VIEWPORT_IDS.map((vpId) => (
               <th
                 key={vpId}
-                className="px-1.5 py-[4px] text-left font-semibold text-[#FFFFFF] border-l border-[#2A2F37] whitespace-nowrap"
+                className="px-1.5 py-[4px] text-left font-semibold text-[#F5F8FC] border-l border-[#2A3A54] whitespace-nowrap"
               >
                 {viewports[vpId].title}
               </th>
@@ -84,8 +84,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
           {renderSectionHeader('view', 'View Settings')}
           {!collapsed.view && (
             <>
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Render Mode</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Render Mode</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -107,8 +107,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Custom Projection</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Custom Projection</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   const val = vp.projection === 'Perspective' ? 'Perspective' : 'Orthographic';
@@ -144,8 +144,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Custom Face Style</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Custom Face Style</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   const faceStyle: CustomFaceStyle = vp.customFaceStyle ?? 'Solid';
@@ -171,8 +171,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Wireframe Overlay</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Wireframe Overlay</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   const overlayEnabled = vp.customWireframeOverlay ?? true;
@@ -186,10 +186,10 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                             renderMode: 'custom',
                           })
                         }
-                        className={`w-full h-[18px] px-1.5 border border-[#141414] text-left text-[10px] cursor-pointer ${
+                        className={`w-full h-[18px] px-1.5 border border-[#1A2740] text-left text-[10px] cursor-pointer ${
                           overlayEnabled
-                            ? 'bg-[#3B6E1C] text-[#FFFFFF]'
-                            : 'bg-[#262626] text-[#CCCCCC]'
+                            ? 'bg-[#3B6E1C] text-[#F5F8FC]'
+                            : 'bg-[#25344E] text-[#CBD5E1]'
                         }`}
                       >
                         {overlayEnabled ? 'Yes' : 'No'}
@@ -199,8 +199,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Isolate Layer</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Isolate Layer</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -227,8 +227,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Custom Model Space</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Custom Model Space</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -250,8 +250,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Grid Width</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Grid Width</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -270,15 +270,15 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className={numInputCls}
                         />
-                        <span className="text-[#9AA1AC] text-[10px]">m</span>
+                        <span className="text-[#A8B5CB] text-[10px]">m</span>
                       </div>
                     </td>
                   );
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Grid Height</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Grid Height</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -297,7 +297,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className={numInputCls}
                         />
-                        <span className="text-[#9AA1AC] text-[10px]">m</span>
+                        <span className="text-[#A8B5CB] text-[10px]">m</span>
                       </div>
                     </td>
                   );
@@ -310,8 +310,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
           {renderSectionHeader('camera', 'Camera Settings')}
           {!collapsed.camera && (
             <>
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Field of View (Vertical)</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Field of View (Vertical)</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -328,7 +328,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-12 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[28px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[28px] text-right">
                           {vp.fov}°
                         </span>
                       </div>
@@ -337,8 +337,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Aspect Ratio</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Aspect Ratio</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -363,8 +363,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Aspect Ratio Masking</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Aspect Ratio Masking</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -387,8 +387,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">White Balance</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">White Balance</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -407,15 +407,15 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className={numInputCls}
                         />
-                        <span className="text-[#9AA1AC] text-[10px]">K</span>
+                        <span className="text-[#A8B5CB] text-[10px]">K</span>
                       </div>
                     </td>
                   );
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Automatic Exposure</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Automatic Exposure</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -423,10 +423,10 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                       <button
                         type="button"
                         onClick={() => onUpdateViewport(vpId, { autoExposure: !vp.autoExposure })}
-                        className={`w-full h-[18px] px-1.5 border border-[#141414] text-left text-[10px] cursor-pointer ${
+                        className={`w-full h-[18px] px-1.5 border border-[#1A2740] text-left text-[10px] cursor-pointer ${
                           vp.autoExposure
-                            ? 'bg-[#3B6E1C] text-[#FFFFFF]'
-                            : 'bg-[#262626] text-[#CCCCCC]'
+                            ? 'bg-[#3B6E1C] text-[#F5F8FC]'
+                            : 'bg-[#25344E] text-[#CBD5E1]'
                         }`}
                       >
                         {vp.autoExposure ? 'Yes' : 'No'}
@@ -436,8 +436,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Exposure Adjustment</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Exposure Adjustment</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   const ev = vp.exposureAdjustment;
@@ -455,7 +455,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-11 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[30px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[30px] text-right">
                           {ev > 0 ? `+${ev}EV` : `${ev}EV`}
                         </span>
                       </div>
@@ -470,8 +470,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
           {renderSectionHeader('environment', 'Environment Settings')}
           {!collapsed.environment && (
             <>
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Laser Flicker Effect</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Laser Flicker Effect</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -479,10 +479,10 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                       <button
                         type="button"
                         onClick={() => onUpdateViewport(vpId, { laserFlicker: !vp.laserFlicker })}
-                        className={`w-full h-[18px] px-1.5 border border-[#141414] text-left text-[10px] cursor-pointer ${
+                        className={`w-full h-[18px] px-1.5 border border-[#1A2740] text-left text-[10px] cursor-pointer ${
                           vp.laserFlicker
-                            ? 'bg-[#3B6E1C] text-[#FFFFFF]'
-                            : 'bg-[#262626] text-[#CCCCCC]'
+                            ? 'bg-[#3B6E1C] text-[#F5F8FC]'
+                            : 'bg-[#25344E] text-[#CBD5E1]'
                         }`}
                       >
                         {vp.laserFlicker ? 'Yes' : 'No'}
@@ -492,8 +492,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Ambient Lighting</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Ambient Lighting</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -510,7 +510,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-12 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[28px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[28px] text-right">
                           {vp.ambientLighting}%
                         </span>
                       </div>
@@ -519,8 +519,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Ambient Lighting Color</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Ambient Lighting Color</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -532,9 +532,9 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           onChange={(e) =>
                             onUpdateViewport(vpId, { ambientLightingColor: e.target.value })
                           }
-                          className="w-[20px] h-[16px] bg-transparent border border-[#2A2F37] p-0 cursor-pointer"
+                          className="w-[20px] h-[16px] bg-transparent border border-[#2A3A54] p-0 cursor-pointer"
                         />
-                        <span className="text-[9px] text-[#A3AAB5] uppercase tabular-nums truncate">
+                        <span className="text-[9px] text-[#B2BECE] uppercase tabular-nums truncate">
                           {vp.ambientLightingColor}
                         </span>
                       </div>
@@ -543,8 +543,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Fill Lighting</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Fill Lighting</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -561,7 +561,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-12 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[28px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[28px] text-right">
                           {vp.fillLighting}%
                         </span>
                       </div>
@@ -576,8 +576,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
           {renderSectionHeader('lens', 'Lens Effects')}
           {!collapsed.lens && (
             <>
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Bloom</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Bloom</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -594,7 +594,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-12 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[28px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[28px] text-right">
                           {vp.bloom}%
                         </span>
                       </div>
@@ -603,8 +603,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Flare</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Flare</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -621,7 +621,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-12 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[28px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[28px] text-right">
                           {vp.flare}%
                         </span>
                       </div>
@@ -630,8 +630,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Flare Streaks</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Flare Streaks</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -654,8 +654,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Flare Angle</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Flare Angle</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -674,15 +674,15 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className={numInputCls}
                         />
-                        <span className="text-[#9AA1AC] text-[10px]">°</span>
+                        <span className="text-[#A8B5CB] text-[10px]">°</span>
                       </div>
                     </td>
                   );
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Flare Size</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Flare Size</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -699,7 +699,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-11 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[30px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[30px] text-right">
                           {vp.flareSize}%
                         </span>
                       </div>
@@ -714,8 +714,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
           {renderSectionHeader('image', 'Image Adjustments')}
           {!collapsed.image && (
             <>
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Hue Clamp</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Hue Clamp</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -732,7 +732,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-12 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[28px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[28px] text-right">
                           {vp.hueClamp}%
                         </span>
                       </div>
@@ -741,8 +741,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Saturation</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Saturation</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -759,7 +759,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-11 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[30px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[30px] text-right">
                           {vp.saturation}%
                         </span>
                       </div>
@@ -768,8 +768,8 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                 })}
               </tr>
 
-              <tr className="border-b border-[#191919]">
-                <td className="px-2 py-[3px] text-[#D4D9E0] bg-[#272C33]">Contrast</td>
+              <tr className="border-b border-[#1C2A43]">
+                <td className="px-2 py-[3px] text-[#D7E0EE] bg-[#263650]">Contrast</td>
                 {VIEWPORT_IDS.map((vpId) => {
                   const vp = viewports[vpId];
                   return (
@@ -786,7 +786,7 @@ export const ViewsInspectorTable: React.FC<ViewsInspectorTableProps> = ({
                           }
                           className="w-11 accent-[#A08F52]"
                         />
-                        <span className="tabular-nums text-[#FFFFFF] text-[10px] min-w-[30px] text-right">
+                        <span className="tabular-nums text-[#F5F8FC] text-[10px] min-w-[30px] text-right">
                           {vp.contrast}%
                         </span>
                       </div>

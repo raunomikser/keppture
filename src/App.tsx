@@ -110,7 +110,7 @@ const ToolbarButton: React.FC<{
     title={label}
     aria-label={label}
     onClick={onClick}
-    className="w-[25px] h-[25px] flex items-center justify-center rounded-[4px] text-[#B8B8B8] hover:bg-[#3A414B] hover:text-white active:bg-[#505050] transition-colors"
+    className="w-[25px] h-[25px] flex items-center justify-center rounded-[4px] text-[#B8B8B8] hover:bg-[#3B4D69] hover:text-white active:bg-[#505050] transition-colors"
   >
     {children}
   </button>
@@ -1082,7 +1082,7 @@ export default function App() {
             dmxAddress: Number(aStr) || 1,
             dmxFootprint: 16,
             intensity: 0.8,
-            color: '#FFFFFF',
+            color: '#F5F8FC',
             beamAngle: 20,
             pan: 0,
             tilt: 22,
@@ -1154,7 +1154,7 @@ export default function App() {
     for (const o of objects) {
       if (o.kind !== 'moving-head' && o.kind !== 'led-par' && o.kind !== 'gdtf-fixture') continue;
       rows.push(
-        `"${o.name}",${o.channel ?? ''},${o.dmxUniverse ?? 1}.${String(o.dmxAddress ?? 1).padStart(3, '0')},${o.dmxFootprint ?? 8},${o.position.join(',')},${o.color ?? '#FFFFFF'}`,
+        `"${o.name}",${o.channel ?? ''},${o.dmxUniverse ?? 1}.${String(o.dmxAddress ?? 1).padStart(3, '0')},${o.dmxFootprint ?? 8},${o.position.join(',')},${o.color ?? '#F5F8FC'}`,
       );
     }
     downloadBlob(new Blob([rows.join('\n')], { type: 'text/csv' }), 'fixture-patch.csv');
@@ -1260,7 +1260,7 @@ export default function App() {
         if (obj.kind === 'moving-head' || obj.kind === 'led-par' || obj.kind === 'gdtf-fixture') {
           fixtureStates[obj.id] = {
             intensity: obj.intensity ?? 0.8,
-            color: obj.color ?? '#ffffff',
+            color: obj.color ?? '#F5F8FC',
             pan: obj.pan ?? 0,
             tilt: obj.tilt ?? 20,
             beamAngle: obj.beamAngle ?? 20,
@@ -1489,17 +1489,17 @@ export default function App() {
   const windowTitle = metadata.project.trim() ? metadata.project.trim() : 'Untitled - Demo';
 
   return (
-    <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#0A0C10]">
+    <div className="flex flex-col w-screen h-screen overflow-hidden bg-[#0A1424]">
       {/* Web app toolbar: app identity, file actions, document title, fullscreen */}
-      <header className="h-[36px] shrink-0 bg-[#20242B] border-b border-[#0A0C10] flex items-center px-[10px] gap-[6px] select-none relative z-40">
+      <header className="h-[36px] shrink-0 bg-[#1E2C43] border-b border-[#0A1424] flex items-center px-[10px] gap-[6px] select-none relative z-40">
         <div className="flex items-center gap-[6px] shrink-0">
           <div className="w-[19px] h-[19px] rounded-[4px] bg-[#93E75C]/15 border border-[#93E75C]/45 flex items-center justify-center">
             <FixtureGroupsIcon className="w-[13px] h-[13px]" />
           </div>
-          <span className="text-[11px] font-semibold tracking-[0.02em] text-[#EBEEF2]">Keppture</span>
+          <span className="text-[11px] font-semibold tracking-[0.02em] text-[#EDF2F8]">Keppture</span>
         </div>
 
-        <div className="h-[16px] w-px bg-[#3A414B] shrink-0" />
+        <div className="h-[16px] w-px bg-[#3B4D69] shrink-0" />
 
         {/* File Dropdown Menu */}
         <FileMenuBar
@@ -1528,7 +1528,7 @@ export default function App() {
           onExportFixtureData={handleExportFixtureData}
         />
 
-        <div className="h-[16px] w-px bg-[#3A414B] shrink-0" />
+        <div className="h-[16px] w-px bg-[#3B4D69] shrink-0" />
 
         <div className="flex items-center gap-[2px] shrink-0">
           <ToolbarButton label={`New project (${MOD_KEY} N)`} onClick={handleNewProject}>
@@ -1548,7 +1548,7 @@ export default function App() {
         {/* Document title, centered in the available space */}
         <div className="flex-1 min-w-0 flex justify-center px-[8px]">
           <span
-            className="max-w-full text-[12px] leading-none font-medium text-[#D4D9E0] tracking-[0.01em] truncate"
+            className="max-w-full text-[12px] leading-none font-medium text-[#D7E0EE] tracking-[0.01em] truncate"
             title={windowTitle}
           >
             {windowTitle}
@@ -1561,7 +1561,7 @@ export default function App() {
               {toastMsg}
             </div>
           )}
-          <div className="h-[16px] w-px bg-[#3A414B]" />
+          <div className="h-[16px] w-px bg-[#3B4D69]" />
           <ToolbarButton
             label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             onClick={toggleFullscreen}
@@ -1587,10 +1587,10 @@ export default function App() {
         />
       </header>
 
-      {/* Main 2x2 Quad-Pane Grid Workspace separated by 1px pure black (#000000) dividers */}
-      <main className="relative flex-1 min-h-0 bg-[#0A0C10]">
+      {/* Main 2x2 Quad-Pane Grid Workspace separated by 1px pure black (#08111F) dividers */}
+      <main className="relative flex-1 min-h-0 bg-[#0A1424]">
         <div
-          className={`w-full h-full bg-[#000000] ${
+          className={`w-full h-full bg-[#08111F] ${
             maximizedPane
               ? 'grid grid-cols-1 grid-rows-1'
               : 'grid grid-cols-2 grid-rows-2 gap-[1px]'
@@ -1602,13 +1602,13 @@ export default function App() {
               return (
                 <div
                   key={id}
-                  className="flex flex-col items-center justify-center bg-[#0A0A0A] text-[#666666] text-[11px] gap-2"
+                  className="flex flex-col items-center justify-center bg-[#0A1424] text-[#7A8AA3] text-[11px] gap-2"
                 >
                   <span>{title} is detached</span>
                   <button
                     type="button"
                     onClick={() => togglePopOut(id)}
-                    className="px-2.5 py-1 bg-[#252A31] border border-[#4A525D] text-[#D4D9E0] hover:text-[#FFFFFF] cursor-pointer"
+                    className="px-2.5 py-1 bg-[#23334D] border border-[#4E5F79] text-[#D7E0EE] hover:text-[#F5F8FC] cursor-pointer"
                   >
                     Dock {title}
                   </button>
@@ -1637,7 +1637,7 @@ export default function App() {
           return (
             <div
               key={`pop-${id}`}
-              className="fixed z-50 w-[560px] h-[390px] border border-[#4A525D] shadow-[0_18px_48px_rgba(0,0,0,0.85)] flex flex-col bg-[#0A0C10]"
+              className="fixed z-50 w-[560px] h-[390px] border border-[#4E5F79] shadow-[0_18px_48px_rgba(0,0,0,0.85)] flex flex-col bg-[#0A1424]"
               style={{ left: `${pos.x}px`, top: `${pos.y}px` }}
               onPointerDown={(e) => {
                 const target = e.target as HTMLElement;
