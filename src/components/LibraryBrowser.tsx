@@ -72,7 +72,7 @@ function setSmallDragImage(
   ctx.strokeRect(0.5, 0.5, 103, 25);
   ctx.fillStyle = accent;
   ctx.fillRect(4, 4, 4, 18);
-  ctx.fillStyle = '#EDF2F8';
+  ctx.fillStyle = '#F2F2F2';
   ctx.font = '10px -apple-system, BlinkMacSystemFont, sans-serif';
   ctx.textBaseline = 'middle';
   ctx.fillText(label.slice(0, 15), 13, 13);
@@ -441,9 +441,9 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
   };
 
   return (
-    <div className="flex-1 min-h-0 flex overflow-hidden bg-[#23334D] text-[#F5F8FC] text-[11px]">
+    <div className="flex-1 min-h-0 flex overflow-hidden bg-[#252A31] text-[#FFFFFF] text-[11px]">
       {/* 1. Left Category Sidebar with labels (matches Design sidebar) */}
-      <div className="w-[145px] shrink-0 bg-[#1B2940] border-r border-[#2A3A54] p-[4px] flex flex-col gap-[2px] overflow-y-auto capture-scroll">
+      <div className="w-[145px] shrink-0 bg-[#1E2229] border-r border-[#2A2F37] p-[4px] flex flex-col gap-[2px] overflow-y-auto capture-scroll">
         {LEFT_CATEGORIES.map(({ id, label, icon: Icon }) => {
           const isActive = activeCategory === id;
           return (
@@ -455,8 +455,8 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
               onClick={() => handleSelectCategory(id)}
               className={`w-full h-[28px] px-[6px] flex items-center gap-[8px] text-left text-[11px] whitespace-nowrap cursor-pointer ${
                 isActive
-                  ? 'bg-[#3A4B68] text-[#F5F8FC] border border-[#94A3B8]'
-                  : 'bg-transparent text-[#CBD5E1] border border-transparent hover:bg-[#2C3C58] hover:text-[#F5F8FC]'
+                  ? 'bg-[#383838] text-[#FFFFFF] border border-[#888888]'
+                  : 'bg-transparent text-[#CCCCCC] border border-transparent hover:bg-[#2B2B2B] hover:text-[#FFFFFF]'
               }`}
             >
               <Icon className="w-[22px] h-[22px] shrink-0" />
@@ -467,29 +467,29 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
       </div>
 
       {/* 2. Main Content Area (Dynamic Asset & Folder List) */}
-      <div className="flex-1 min-w-0 flex flex-col bg-[#23334D] overflow-hidden">
+      <div className="flex-1 min-w-0 flex flex-col bg-[#252A31] overflow-hidden">
         {/* Header / Breadcrumb & Search Bar */}
-        <div className="h-[28px] shrink-0 bg-[#1B2940] border-b border-[#2A3A54] px-[8px] flex items-center justify-between gap-2">
+        <div className="h-[28px] shrink-0 bg-[#1E2229] border-b border-[#2A2F37] px-[8px] flex items-center justify-between gap-2">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-1 min-w-0 text-[11px] truncate">
             <button
               type="button"
               onClick={() => setOpenFolder(null)}
-              className={`hover:text-[#F5F8FC] cursor-pointer ${
-                openFolder ? 'text-[#B2BECE]' : 'text-[#F5F8FC] font-semibold'
+              className={`hover:text-[#FFFFFF] cursor-pointer ${
+                openFolder ? 'text-[#999999]' : 'text-[#FFFFFF] font-semibold'
               }`}
             >
               {activeCategory}
             </button>
             {openFolder && !isFiltering && (
               <>
-                <span className="text-[#7A8AA3]">›</span>
-                <span className="text-[#F5F8FC] font-semibold truncate">{openFolder}</span>
+                <span className="text-[#666666]">›</span>
+                <span className="text-[#FFFFFF] font-semibold truncate">{openFolder}</span>
               </>
             )}
             {isFiltering && (
               <>
-                <span className="text-[#7A8AA3]">›</span>
+                <span className="text-[#666666]">›</span>
                 <span className="text-[#83D84C] text-[10px]">
                   Filtered (
                   {activeCategory === 'Materials'
@@ -503,20 +503,20 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
 
           {/* Search Input ("filter") */}
           <div className="flex items-center gap-1.5 shrink-0">
-            <div className="relative flex items-center bg-[#2A3A54] border border-[#364860] focus-within:border-[#A08F52] h-[20px] px-1.5 w-[150px]">
-              <SearchMagnifierIcon className="w-[11px] h-[11px] text-[#A8B5CB] shrink-0 mr-1" />
+            <div className="relative flex items-center bg-[#2A2F37] border border-[#363C45] focus-within:border-[#A08F52] h-[20px] px-1.5 w-[150px]">
+              <SearchMagnifierIcon className="w-[11px] h-[11px] text-[#9AA1AC] shrink-0 mr-1" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="filter"
-                className="w-full bg-transparent text-[11px] text-[#F5F8FC] placeholder-[#8695AD] focus:outline-none"
+                className="w-full bg-transparent text-[11px] text-[#FFFFFF] placeholder-[#777777] focus:outline-none"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="text-[#A8B5CB] hover:text-[#F5F8FC] text-[10px] ml-1 cursor-pointer"
+                  className="text-[#9AA1AC] hover:text-[#FFFFFF] text-[10px] ml-1 cursor-pointer"
                 >
                   ×
                 </button>
@@ -563,7 +563,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
             <div className="p-2 flex flex-col gap-3">
               {BUILT_IN_GROUPS.map((group) => (
                 <section key={group.title}>
-                  <div className="mb-1 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-[#A8B5CB]">
+                  <div className="mb-1 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-[#9AA1AC]">
                     {group.title}
                   </div>
                   <div className="flex flex-col">
@@ -591,8 +591,8 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                           }}
                           className={`h-[24px] px-2 flex items-center gap-2 text-left ${
                             item
-                              ? 'text-[#F5F8FC] hover:bg-[#354663] cursor-grab active:cursor-grabbing'
-                              : 'text-[#AEBBD0] hover:bg-[#2F3F5B] cursor-default'
+                              ? 'text-[#FFFFFF] hover:bg-[#333333] cursor-grab active:cursor-grabbing'
+                              : 'text-[#A5A5A5] hover:bg-[#2E2E2E] cursor-default'
                           }`}
                         >
                           <Icon className="w-[14px] h-[14px] shrink-0" />
@@ -605,11 +605,11 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                 </section>
               ))}
 
-              <section className="border-t border-[#2A3A54] pt-2">
+              <section className="border-t border-[#2A2F37] pt-2">
                 <button
                   type="button"
                   onClick={() => setShowImporters((v) => !v)}
-                  className="w-full px-2 py-1 flex items-center justify-between text-[10px] uppercase tracking-[0.08em] text-[#A8B5CB] hover:text-[#F5F8FC] cursor-pointer"
+                  className="w-full px-2 py-1 flex items-center justify-between text-[10px] uppercase tracking-[0.08em] text-[#9AA1AC] hover:text-[#FFFFFF] cursor-pointer"
                 >
                   <span>Importers (GDTF / 3D models)</span>
                   <span>{showImporters ? '−' : '+'}</span>
@@ -617,11 +617,11 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                 {showImporters && (
                   <div className="flex flex-col gap-2 mt-2">
               {/* GDTF Importer Strip */}
-              <div className="p-2 bg-[#1B2940] border border-[#2A3A54] flex flex-col gap-1.5">
+              <div className="p-2 bg-[#1E2229] border border-[#2A2F37] flex flex-col gap-1.5">
                 <div className="flex items-center justify-between gap-2">
                   <div>
-                    <div className="font-semibold text-[#F5F8FC]">GDTF Engine (DIN SPEC 15800)</div>
-                    <div className="text-[10px] text-[#B2BECE]">
+                    <div className="font-semibold text-[#FFFFFF]">GDTF Engine (DIN SPEC 15800)</div>
+                    <div className="text-[10px] text-[#A3AAB5]">
                       Drop .gdtf archive here or import to IndexedDB VFS cache
                     </div>
                   </div>
@@ -630,7 +630,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                       type="button"
                       disabled={gdtfBusy}
                       onClick={() => void onLoadSampleGdtf()}
-                      className="px-2 py-0.5 bg-[#487F28] border border-[#63A93B] hover:bg-[#55972E] text-[10px] text-[#F5F8FC] cursor-pointer"
+                      className="px-2 py-0.5 bg-[#487F28] border border-[#63A93B] hover:bg-[#55972E] text-[10px] text-[#FFFFFF] cursor-pointer"
                     >
                       {gdtfBusy ? 'Parsing...' : 'Load Sample .gdtf'}
                     </button>
@@ -638,7 +638,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                       type="button"
                       disabled={gdtfBusy}
                       onClick={() => gdtfInputRef.current?.click()}
-                      className="px-2 py-0.5 bg-[#364860] border border-[#2A3A54] hover:bg-[#4E5F79] text-[10px] cursor-pointer"
+                      className="px-2 py-0.5 bg-[#363C45] border border-[#2A2F37] hover:bg-[#4A525D] text-[10px] cursor-pointer"
                     >
                       Import .gdtf...
                     </button>
@@ -657,7 +657,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                 </div>
 
                 {gdtfProfiles.length > 0 && (
-                  <div className="flex flex-col border-t border-[#2E3E59] pt-1.5 gap-1">
+                  <div className="flex flex-col border-t border-[#2E343C] pt-1.5 gap-1">
                     {gdtfProfiles.map((profile) => {
                       const thumbEntry = profile.metadata.thumbnail
                         ? resolveVfsAsset(profile.id, profile.metadata.thumbnail, ['.png', '.jpg'])
@@ -679,7 +679,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                             setSmallDragImage(e, profile.metadata.name);
                           }}
                           title={`Drag ${profile.metadata.name} into a viewport`}
-                          className="flex items-center justify-between gap-2 px-2 py-1 bg-[#23334D] border border-[#2A3A54] hover:border-[#A08F52] cursor-grab active:cursor-grabbing"
+                          className="flex items-center justify-between gap-2 px-2 py-1 bg-[#252A31] border border-[#2A2F37] hover:border-[#A08F52] cursor-grab active:cursor-grabbing"
                         >
                           <div className="flex items-center gap-2 min-w-0">
                             {thumbEntry ? (
@@ -694,10 +694,10 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                               </div>
                             )}
                             <div className="min-w-0">
-                              <div className="text-[#F5F8FC] font-medium truncate">
+                              <div className="text-[#FFFFFF] font-medium truncate">
                                 {profile.metadata.manufacturer} — {profile.metadata.name}
                               </div>
-                              <div className="text-[9px] text-[#A8B5CB] truncate">
+                              <div className="text-[9px] text-[#9AA1AC] truncate">
                                 {profile.dmxModes.length} modes · {primaryMode?.footprint ?? 0} DMX ch ·{' '}
                                 {Object.keys(profile.wheels).length} wheels · {Object.keys(profile.models).length} models
                               </div>
@@ -708,7 +708,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                               type="button"
                               onClick={() => onDeleteGdtfProfile(profile.id)}
                               title="Remove from IndexedDB cache"
-                              className="px-1.5 py-0.5 bg-[#45231F] hover:bg-[#6A2824] border border-[#2A3A54] text-[10px] text-[#FFA9A1] cursor-pointer"
+                              className="px-1.5 py-0.5 bg-[#45231F] hover:bg-[#6A2824] border border-[#2A2F37] text-[10px] text-[#FFA9A1] cursor-pointer"
                             >
                               ×
                             </button>
@@ -721,11 +721,11 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
               </div>
 
               {/* SketchUp .skp & 3D Model Importer Strip */}
-              <div className="p-2 bg-[#1B2940] border border-[#2A3A54] flex flex-col gap-1.5">
+              <div className="p-2 bg-[#1E2229] border border-[#2A2F37] flex flex-col gap-1.5">
                 <div className="flex items-center justify-between gap-2">
                   <div>
-                    <div className="font-semibold text-[#F5F8FC]">SketchUp (.skp) & 3D Model Pipeline</div>
-                    <div className="text-[10px] text-[#B2BECE]">
+                    <div className="font-semibold text-[#FFFFFF]">SketchUp (.skp) & 3D Model Pipeline</div>
+                    <div className="text-[10px] text-[#A3AAB5]">
                       Hierarchical component tree, normals, UVs & parent-child matrices
                     </div>
                   </div>
@@ -733,14 +733,14 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                     <button
                       type="button"
                       onClick={onLoadSampleSkp}
-                      className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] text-[10px] text-[#F5F8FC] cursor-pointer"
+                      className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] text-[10px] text-[#FFFFFF] cursor-pointer"
                     >
                       Load Sample .skp
                     </button>
                     <button
                       type="button"
                       onClick={() => skpInputRef.current?.click()}
-                      className="px-2 py-0.5 bg-[#364860] border border-[#2A3A54] hover:bg-[#4E5F79] text-[10px] cursor-pointer"
+                      className="px-2 py-0.5 bg-[#363C45] border border-[#2A2F37] hover:bg-[#4A525D] text-[10px] cursor-pointer"
                     >
                       Import .skp/.glb...
                     </button>
@@ -759,7 +759,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                 </div>
 
                 {importedSkpModels.length > 0 && (
-                  <div className="flex flex-col border-t border-[#2E3E59] pt-1.5 gap-1">
+                  <div className="flex flex-col border-t border-[#2E343C] pt-1.5 gap-1">
                     {importedSkpModels.map((model) => (
                       <div
                         key={model.id}
@@ -770,11 +770,11 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                           setSmallDragImage(e, model.fileName, '#5AC8FA');
                         }}
                         title={`Drag ${model.fileName} into a viewport`}
-                        className="flex items-center justify-between gap-2 px-2 py-1 bg-[#23334D] border border-[#2A3A54] hover:border-[#A08F52] cursor-grab active:cursor-grabbing"
+                        className="flex items-center justify-between gap-2 px-2 py-1 bg-[#252A31] border border-[#2A2F37] hover:border-[#A08F52] cursor-grab active:cursor-grabbing"
                       >
                         <div className="min-w-0">
-                          <div className="text-[#F5F8FC] font-medium truncate">{model.fileName}</div>
-                          <div className="text-[9px] text-[#A8B5CB] truncate">
+                          <div className="text-[#FFFFFF] font-medium truncate">{model.fileName}</div>
+                          <div className="text-[9px] text-[#9AA1AC] truncate">
                             {model.sketchUpVersion} · {model.componentCount} components · {model.vertexCount} verts ·{' '}
                             {model.faceCount} faces
                           </div>
@@ -792,21 +792,21 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
 
           {/* Folder List View (when browsing Manufacturers / Sub-Categories) */}
           {showFolderView && (
-            <div className="flex flex-col divide-y divide-[#2A3A54]">
+            <div className="flex flex-col divide-y divide-[#2A2F37]">
               {folders.map((folder, idx) => (
                 <button
                   key={folder.name}
                   type="button"
                   onClick={() => setOpenFolder(folder.name)}
-                  className={`w-full h-[26px] px-2.5 flex items-center justify-between text-left hover:bg-[#354663] cursor-pointer ${
-                    idx % 2 === 0 ? 'bg-[#25344E]' : 'bg-[#1D2B43]'
+                  className={`w-full h-[26px] px-2.5 flex items-center justify-between text-left hover:bg-[#333333] cursor-pointer ${
+                    idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
                   }`}
                 >
                   <span className="flex items-center gap-2 min-w-0">
                     <FolderGlyphIcon className="w-[14px] h-[14px] text-[#A08F52] shrink-0" />
-                    <span className="text-[#F5F8FC] truncate">{folder.name}</span>
+                    <span className="text-[#FFFFFF] truncate">{folder.name}</span>
                   </span>
-                  <span className="flex items-center gap-2 text-[10px] text-[#A8B5CB] shrink-0 tabular-nums">
+                  <span className="flex items-center gap-2 text-[10px] text-[#9AA1AC] shrink-0 tabular-nums">
                     <span>{folder.count}</span>
                     <span>›</span>
                   </span>
@@ -818,16 +818,16 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
           {/* Materials Grouped View (Colours, Glossy, Matte, Metallic, Construction) */}
           {activeCategory === 'Materials' && (
             <div className="flex flex-col">
-              <div className="px-2.5 py-1 bg-[#171B20] border-b border-[#2A3A54] text-[10px] text-[#B2BECE] flex items-center justify-between">
+              <div className="px-2.5 py-1 bg-[#171B20] border-b border-[#2A2F37] text-[10px] text-[#A3AAB5] flex items-center justify-between">
                 <span>Drag a material directly onto any object in a CAD viewport to apply.</span>
-                <span className="tabular-nums text-[#8695AD]">{filteredMaterials.length} materials</span>
+                <span className="tabular-nums text-[#777777]">{filteredMaterials.length} materials</span>
               </div>
 
               {groupedMaterials.map((group) => (
                 <div key={group.category} className="flex flex-col">
                   {/* Signature Blue Section Header */}
                   <div className="sticky top-0 z-10 h-[22px] bg-[#0058D0] border-y border-[#003E96] flex items-center justify-center px-4 shadow-sm">
-                    <div className="w-[62%] max-w-[420px] text-center border-b border-white/80 pb-[1px] text-[11px] font-semibold text-[#F5F8FC] leading-none">
+                    <div className="w-[62%] max-w-[420px] text-center border-b border-white/80 pb-[1px] text-[11px] font-semibold text-[#FFFFFF] leading-none">
                       {group.category}
                     </div>
                   </div>
@@ -844,8 +844,8 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                       }}
                       onDoubleClick={() => hasSelectedMaterialTargets && onApplyMaterial?.(mat.id)}
                       title={`Drag "${mat.name}" onto any object in a viewport`}
-                      className={`group h-[26px] px-2 flex items-center justify-between gap-2 border-b border-[#1B2944] hover:bg-[#354663] cursor-grab active:cursor-grabbing ${
-                        idx % 2 === 0 ? 'bg-[#213049]' : 'bg-[#1B2940]'
+                      className={`group h-[26px] px-2 flex items-center justify-between gap-2 border-b border-[#161616] hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
+                        idx % 2 === 0 ? 'bg-[#212121]' : 'bg-[#1A1A1A]'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
@@ -853,9 +853,9 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                           src={getMaterialPreviewUrl(mat)}
                           alt={mat.name}
                           draggable={false}
-                          className="w-[18px] h-[18px] border border-[#0D1727] shrink-0 object-cover select-none"
+                          className="w-[18px] h-[18px] border border-[#0D0D0D] shrink-0 object-cover select-none"
                         />
-                        <span className="text-[11px] text-[#EDF2F8] truncate">{mat.name}</span>
+                        <span className="text-[11px] text-[#EDEDED] truncate">{mat.name}</span>
                       </div>
 
                       {hasSelectedMaterialTargets && onApplyMaterial && (
@@ -865,7 +865,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                             e.stopPropagation();
                             onApplyMaterial(mat.id);
                           }}
-                          className="opacity-0 group-hover:opacity-100 px-2 py-0.5 bg-[#364860] hover:bg-[#596A85] border border-[#2A3A54] text-[10px] text-[#F5F8FC] shrink-0 cursor-pointer transition-opacity"
+                          className="opacity-0 group-hover:opacity-100 px-2 py-0.5 bg-[#363C45] hover:bg-[#545454] border border-[#2A2F37] text-[10px] text-[#FFFFFF] shrink-0 cursor-pointer transition-opacity"
                         >
                           Apply
                         </button>
@@ -876,7 +876,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
               ))}
 
               {groupedMaterials.length === 0 && (
-                <div className="p-4 text-center text-[#A8B5CB] text-[11px]">
+                <div className="p-4 text-center text-[#9AA1AC] text-[11px]">
                   No matching materials. Adjust your search or right-hand filters.
                 </div>
               )}
@@ -885,12 +885,12 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
 
           {/* Asset Rows (inside opened folder, or during live filter/search, or flat category) */}
           {!showFolderView && activeCategory !== 'Built-In' && activeCategory !== 'Materials' && (
-            <div className="flex flex-col divide-y divide-[#2A3A54]">
+            <div className="flex flex-col divide-y divide-[#2A2F37]">
               {openFolder && !isFiltering && (
                 <button
                   type="button"
                   onClick={() => setOpenFolder(null)}
-                  className="w-full h-[23px] px-2.5 bg-[#1E2C44] hover:bg-[#2C2C2C] flex items-center gap-1.5 text-left text-[10px] text-[#D7E0EE] cursor-pointer"
+                  className="w-full h-[23px] px-2.5 bg-[#1C1C1C] hover:bg-[#2C2C2C] flex items-center gap-1.5 text-left text-[10px] text-[#D4D9E0] cursor-pointer"
                 >
                   <span>‹ Back to {activeCategory}</span>
                 </button>
@@ -927,8 +927,8 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                           setSmallDragImage(e, entry.name);
                         }}
                         title={`${entry.manufacturer} ${modelName}\nDrag into a viewport to load the real .gdtf profile`}
-                        className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#354663] cursor-grab active:cursor-grabbing ${
-                          idx % 2 === 0 ? 'bg-[#25344E]' : 'bg-[#1D2B43]'
+                        className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
+                          idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
                         }`}
                       >
                         <div className="min-w-0 w-full">
@@ -936,17 +936,17 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                             <span className="px-1 py-0 bg-[#1D3316] border border-[#5A9E35] text-[9px] text-[#83D84C] shrink-0">
                               GDTF
                             </span>
-                            <span className="text-[9px] uppercase tracking-wide text-[#A8B5CB] truncate">
+                            <span className="text-[9px] uppercase tracking-wide text-[#9AA1AC] truncate">
                               {entry.manufacturer}
                             </span>
                           </div>
                           <div
-                            className="text-[11px] leading-[13px] text-[#F5F8FC] font-medium break-words"
+                            className="text-[11px] leading-[13px] text-[#FFFFFF] font-medium break-words"
                             title={modelName}
                           >
                             {modelName}
                           </div>
-                          <div className="text-[10px] text-[#94A3B8] truncate">
+                          <div className="text-[10px] text-[#888888] truncate">
                             {defaultMode?.name ?? 'Standard'} · {modeSummary}
                           </div>
                         </div>
@@ -957,7 +957,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                     <button
                       type="button"
                       onClick={() => setLibraryVisibleLimit((n) => n + 120)}
-                      className="w-full h-[24px] bg-[#2E3E59] hover:bg-[#3B4D69] text-[10px] text-[#B6C2D3] cursor-pointer"
+                      className="w-full h-[24px] bg-[#2E343C] hover:bg-[#3A414B] text-[10px] text-[#AAAAAA] cursor-pointer"
                     >
                       Show more GDTF profiles ({filteredLibraryGdtf.length - libraryVisibleLimit} remaining)
                     </button>
@@ -981,8 +981,8 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                       setSmallDragImage(e, profile.metadata.name);
                     }}
                     title={`${profile.metadata.manufacturer} ${profile.metadata.name}\nDrag into a viewport`}
-                    className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#354663] cursor-grab active:cursor-grabbing ${
-                      idx % 2 === 0 ? 'bg-[#25344E]' : 'bg-[#1D2B43]'
+                    className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
+                      idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
                     }`}
                   >
                     <div className="min-w-0 w-full">
@@ -990,14 +990,14 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                         <span className="px-1 py-0 bg-[#1D3316] border border-[#5A9E35] text-[9px] text-[#83D84C] shrink-0">
                           GDTF
                         </span>
-                        <span className="text-[9px] uppercase tracking-wide text-[#A8B5CB] truncate">
+                        <span className="text-[9px] uppercase tracking-wide text-[#9AA1AC] truncate">
                           {profile.metadata.manufacturer}
                         </span>
                       </div>
-                      <div className="text-[11px] leading-[13px] text-[#F5F8FC] font-medium break-words">
+                      <div className="text-[11px] leading-[13px] text-[#FFFFFF] font-medium break-words">
                         {profile.metadata.name}
                       </div>
-                      <div className="text-[10px] text-[#94A3B8] truncate">
+                      <div className="text-[10px] text-[#888888] truncate">
                         {primaryMode?.name ?? 'Standard'} · {primaryMode?.footprint ?? 0} ch
                       </div>
                     </div>
@@ -1013,22 +1013,22 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                 return (
                   <div
                     key={`${slot.profileId}-${slot.slotName}-${i}`}
-                    className="px-2.5 py-1.5 bg-[#1E2C43] hover:bg-[#33445F] flex items-center justify-between gap-2"
+                    className="px-2.5 py-1.5 bg-[#20242B] hover:bg-[#343A43] flex items-center justify-between gap-2"
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       {texEntry ? (
                         <img
                           src={texEntry.objectUrl}
                           alt={slot.slotName}
-                          className="w-[18px] h-[18px] rounded-full border border-[#5B6B85] bg-[#08111F] shrink-0"
+                          className="w-[18px] h-[18px] rounded-full border border-[#555] bg-[#000] shrink-0"
                         />
                       ) : (
-                        <span className="w-[18px] h-[18px] rounded-full border border-[#5B6B85] flex items-center justify-center text-[9px]">
+                        <span className="w-[18px] h-[18px] rounded-full border border-[#555] flex items-center justify-center text-[9px]">
                           ◎
                         </span>
                       )}
                       <div className="min-w-0">
-                        <div className="text-[#F5F8FC] truncate">{slot.slotName}</div>
+                        <div className="text-[#FFFFFF] truncate">{slot.slotName}</div>
                         <div className="text-[9px] text-[#83D84C] truncate">
                           GDTF Wheel ({slot.profileName})
                         </div>
@@ -1038,7 +1038,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                       type="button"
                       disabled={!hasSelectedFixtures}
                       onClick={() => onApplyGoboPreset(slot.slotName, slot.mediaFile)}
-                      className="px-2 py-0.5 bg-[#364860] hover:bg-[#596A85] disabled:opacity-40 border border-[#2A3A54] text-[10px] shrink-0 cursor-pointer"
+                      className="px-2 py-0.5 bg-[#363C45] hover:bg-[#545454] disabled:opacity-40 border border-[#2A2F37] text-[10px] shrink-0 cursor-pointer"
                     >
                       Apply
                     </button>
@@ -1067,8 +1067,8 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                           setSmallDragImage(e, modelName, '#E5B769');
                         }}
                         title={`${entry.manufacturer} ${modelName}\n${length.toFixed(2)} m · ${width.toFixed(2)} × ${height.toFixed(2)} m section\nDrag into a viewport — ends snap magnetically`}
-                        className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#354663] cursor-grab active:cursor-grabbing ${
-                          idx % 2 === 0 ? 'bg-[#25344E]' : 'bg-[#1D2B43]'
+                        className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
+                          idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
                         }`}
                       >
                         <div className="min-w-0 w-full">
@@ -1076,17 +1076,17 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                             <span className="px-1 py-0 bg-[#3A2A12] border border-[#8A6A32] text-[9px] text-[#E5B769] shrink-0">
                               SKP
                             </span>
-                            <span className="text-[9px] uppercase tracking-wide text-[#A8B5CB] truncate">
+                            <span className="text-[9px] uppercase tracking-wide text-[#9AA1AC] truncate">
                               {entry.manufacturer}
                             </span>
                           </div>
                           <div
-                            className="text-[11px] leading-[13px] text-[#F5F8FC] font-medium break-words"
+                            className="text-[11px] leading-[13px] text-[#FFFFFF] font-medium break-words"
                             title={modelName}
                           >
                             {modelName}
                           </div>
-                          <div className="text-[10px] text-[#94A3B8] truncate">
+                          <div className="text-[10px] text-[#888888] truncate">
                             {length.toFixed(2)} m · {width.toFixed(2)} × {height.toFixed(2)} m · magnetic ends
                           </div>
                         </div>
@@ -1097,7 +1097,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                     <button
                       type="button"
                       onClick={() => setLibraryVisibleLimit((n) => n + 120)}
-                      className="w-full h-[24px] bg-[#2E3E59] hover:bg-[#3B4D69] text-[10px] text-[#B6C2D3] cursor-pointer"
+                      className="w-full h-[24px] bg-[#2E343C] hover:bg-[#3A414B] text-[10px] text-[#AAAAAA] cursor-pointer"
                     >
                       Show more SketchUp trusses ({filteredSkpLibrary.length - libraryVisibleLimit} remaining)
                     </button>
@@ -1117,23 +1117,23 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                     setSmallDragImage(e, item.name, item.kind === 'co2-jet' ? '#5AC8FA' : '#6BC938');
                   }}
                   title={`Drag ${item.name} into a viewport`}
-                  className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#354663] cursor-grab active:cursor-grabbing ${
-                    idx % 2 === 0 ? 'bg-[#25344E]' : 'bg-[#1D2B43]'
+                  className={`px-2.5 py-1.5 flex items-center justify-between gap-2 hover:bg-[#333333] cursor-grab active:cursor-grabbing ${
+                    idx % 2 === 0 ? 'bg-[#262626]' : 'bg-[#1F1F1F]'
                   }`}
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     {activeCategory === 'Filters' && item.defaultColor && (
                       <span
-                        className="w-[14px] h-[14px] border border-[#08111F] shrink-0"
+                        className="w-[14px] h-[14px] border border-[#000] shrink-0"
                         style={{ backgroundColor: item.defaultColor }}
                       />
                     )}
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[#F5F8FC] font-medium truncate">{item.name}</span>
-                        <span className="text-[9px] text-[#A8B5CB] shrink-0">{item.manufacturer}</span>
+                        <span className="text-[#FFFFFF] font-medium truncate">{item.name}</span>
+                        <span className="text-[9px] text-[#9AA1AC] shrink-0">{item.manufacturer}</span>
                       </div>
-                      <div className="text-[10px] text-[#94A3B8] truncate">{item.description}</div>
+                      <div className="text-[10px] text-[#888888] truncate">{item.description}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
@@ -1143,7 +1143,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                         disabled={!hasSelectedFixtures}
                         onClick={() => onApplyFilterColor(item.defaultColor!)}
                         title={hasSelectedFixtures ? 'Apply gel to selected fixtures' : 'Select a fixture first'}
-                        className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] disabled:opacity-40 text-[10px] text-[#F5F8FC] cursor-pointer"
+                        className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] disabled:opacity-40 text-[10px] text-[#FFFFFF] cursor-pointer"
                       >
                         Tint
                       </button>
@@ -1154,7 +1154,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                         disabled={!hasSelectedFixtures}
                         onClick={() => onApplyGoboPreset(item.goboName!)}
                         title={hasSelectedFixtures ? 'Apply gobo to selected fixtures' : 'Select a fixture first'}
-                        className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] disabled:opacity-40 text-[10px] text-[#F5F8FC] cursor-pointer"
+                        className="px-2 py-0.5 bg-[#A08F52] hover:bg-[#B09E5A] disabled:opacity-40 text-[10px] text-[#FFFFFF] cursor-pointer"
                       >
                         Apply
                       </button>
@@ -1164,7 +1164,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
               ))}
 
               {filteredItems.length === 0 && filteredGdtf.length === 0 && filteredSkpLibrary.length === 0 && gdtfGoboSlots.length === 0 && (
-                <div className="p-4 text-center text-[#A8B5CB] text-[11px]">
+                <div className="p-4 text-center text-[#9AA1AC] text-[11px]">
                   No matching assets in {activeCategory}. Adjust your search or right-hand filters.
                 </div>
               )}
@@ -1173,10 +1173,10 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
         </div>
       </div>
 
-      {/* 3. Right Filter Sidebar (~180px wide, #1D2B43) */}
-      <div className="w-[180px] shrink-0 bg-[#1B2940] border-l border-[#2A3A54] flex flex-col overflow-hidden">
-        <div className="h-[28px] shrink-0 px-2.5 border-b border-[#2A3A54] flex items-center justify-between">
-          <span className="text-[10px] font-semibold uppercase tracking-wide text-[#B2BECE]">
+      {/* 3. Right Filter Sidebar (~180px wide, #1F1F1F) */}
+      <div className="w-[180px] shrink-0 bg-[#1E2229] border-l border-[#2A2F37] flex flex-col overflow-hidden">
+        <div className="h-[28px] shrink-0 px-2.5 border-b border-[#2A2F37] flex items-center justify-between">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-[#A3AAB5]">
             {activeCategory} Filters
           </span>
           {activeFilterList.length > 0 && (
@@ -1195,7 +1195,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
             return (
               <label
                 key={tag}
-                className="flex items-center gap-2 px-1 py-[2px] rounded-[2px] hover:bg-[#2E3E59] cursor-pointer text-[11px] text-[#D7E0EE]"
+                className="flex items-center gap-2 px-1 py-[2px] rounded-[2px] hover:bg-[#2E343C] cursor-pointer text-[11px] text-[#D4D9E0]"
               >
                 <input
                   type="checkbox"
@@ -1203,7 +1203,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
                   onChange={() => toggleFilter(tag)}
                   className="accent-[#A08F52] cursor-pointer"
                 />
-                <span className={checked ? 'text-[#F5F8FC] font-medium truncate' : 'truncate'}>
+                <span className={checked ? 'text-[#FFFFFF] font-medium truncate' : 'truncate'}>
                   {tag}
                 </span>
               </label>

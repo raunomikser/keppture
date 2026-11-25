@@ -205,10 +205,10 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
   const universeBuffer = dmxUniverses[selectedUniverse] ?? new Uint8Array(512);
 
   return (
-    <div className="flex flex-col w-full h-full bg-[#23334D] text-[#F5F8FC] text-[11px] select-none border-t border-[#2A3A54]">
+    <div className="flex flex-col w-full h-full bg-[#252A31] text-[#FFFFFF] text-[11px] select-none border-t border-[#2A2F37]">
       {/* Top Centered Navigation Bar (6 tabs) */}
-      <div className="h-[26px] shrink-0 bg-[#23334D] border-b border-[#2A3A54] flex items-center justify-center px-2">
-        <div className="flex items-center border border-[#2A3A54] rounded-[2px] overflow-hidden">
+      <div className="h-[26px] shrink-0 bg-[#252A31] border-b border-[#2A2F37] flex items-center justify-center px-2">
+        <div className="flex items-center border border-[#2A2F37] rounded-[2px] overflow-hidden">
           {TOP_TABS.map((tab, idx) => {
             const isActive = activeTab === tab;
             return (
@@ -216,12 +216,12 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                 key={tab}
                 type="button"
                 onClick={() => onTabChange(tab)}
-                className={`h-[19px] px-[10px] text-[11px] leading-none text-[#F5F8FC] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${
-                  idx > 0 ? 'border-l border-[#1A2740]' : ''
+                className={`h-[19px] px-[10px] text-[11px] leading-none text-[#FFFFFF] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${
+                  idx > 0 ? 'border-l border-[#141414]' : ''
                 } ${
                   isActive
-                    ? 'bg-[#596A85] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]'
-                    : 'bg-[#3A4B68] hover:bg-[#444444]'
+                    ? 'bg-[#545454] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]'
+                    : 'bg-[#383838] hover:bg-[#444444]'
                 }`}
               >
                 {tab}
@@ -235,8 +235,8 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
       <div className="flex-1 min-h-0 flex overflow-hidden">
         {activeTab === 'Design' && (
           <>
-            {/* Left Category Sidebar (145px wide, #1D2B43) */}
-            <div className="w-[145px] shrink-0 bg-[#1B2940] border-r border-[#2A3A54] p-[4px] flex flex-col gap-[2px] overflow-y-auto capture-scroll">
+            {/* Left Category Sidebar (145px wide, #1F1F1F) */}
+            <div className="w-[145px] shrink-0 bg-[#1E2229] border-r border-[#2A2F37] p-[4px] flex flex-col gap-[2px] overflow-y-auto capture-scroll">
               {DESIGN_CATEGORIES.map(({ key, icon: Icon }) => {
                 const isActive = activeCategory === key;
                 return (
@@ -244,10 +244,10 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                     key={key}
                     type="button"
                     onClick={() => onCategoryChange(key)}
-                    className={`w-full h-[28px] px-[6px] flex items-center gap-[8px] text-left text-[11px] text-[#F5F8FC] whitespace-nowrap cursor-pointer ${
+                    className={`w-full h-[28px] px-[6px] flex items-center gap-[8px] text-left text-[11px] text-[#FFFFFF] whitespace-nowrap cursor-pointer ${
                       isActive
-                        ? 'bg-[#3A4B68] border border-[#94A3B8]'
-                        : 'bg-transparent border border-transparent hover:bg-[#2C3C58]'
+                        ? 'bg-[#383838] border border-[#888888]'
+                        : 'bg-transparent border border-transparent hover:bg-[#2B2B2B]'
                     }`}
                   >
                     <Icon className="w-[22px] h-[22px] shrink-0" />
@@ -257,13 +257,13 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
               })}
             </div>
 
-            {/* Right Properties Inspector (#25344E) */}
-            <div className="flex-1 min-w-0 bg-[#23334D] overflow-y-auto capture-scroll px-[12px] py-[8px]">
+            {/* Right Properties Inspector (#262626) */}
+            <div className="flex-1 min-w-0 bg-[#252A31] overflow-y-auto capture-scroll px-[12px] py-[8px]">
               {/* Inspector Header */}
               <div className="mb-[8px] pb-[4px] border-b border-[#171B20] flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] leading-tight text-[#B2BECE]">Properties</div>
-                  <div className="text-[12px] leading-tight font-bold text-[#F5F8FC]">
+                  <div className="text-[10px] leading-tight text-[#A3AAB5]">Properties</div>
+                  <div className="text-[12px] leading-tight font-bold text-[#FFFFFF]">
                     {activeCategory}
                     {activeCategory === 'Selected Items' && selectedObjects.length > 1
                       ? ` (${selectedObjects.length} items)`
@@ -274,7 +274,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectObject(null, 'replace')}
-                    className="px-2 py-0.5 bg-[#364860] border border-[#2A3A54] hover:bg-[#4E5F79] text-[10px] text-[#D7E0EE] cursor-pointer"
+                    className="px-2 py-0.5 bg-[#363C45] border border-[#2A2F37] hover:bg-[#4A525D] text-[10px] text-[#D4D9E0] cursor-pointer"
                   >
                     Clear Selection
                   </button>
@@ -286,19 +286,19 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                 <div className="flex flex-col gap-[3px]">
                   {PROJECT_TEXT_FIELDS.map(({ key, label }) => (
                     <div key={key} className="grid grid-cols-[120px_1fr] items-center gap-[8px] min-h-[20px]">
-                      <label className="text-[11px] text-[#F5F8FC] truncate">{label}</label>
+                      <label className="text-[11px] text-[#FFFFFF] truncate">{label}</label>
                       <input
                         type="text"
                         value={(metadata[key] as string) ?? ''}
                         onChange={(e) => onUpdateMetadata({ [key]: e.target.value })}
-                        className="h-[19px] px-[6px] bg-[#172236] border border-[#2A3A54] text-[11px] text-[#F5F8FC] focus:outline-none focus:border-[#A08F52]"
+                        className="h-[19px] px-[6px] bg-[#1B1F25] border border-[#2A2F37] text-[11px] text-[#FFFFFF] focus:outline-none focus:border-[#A08F52]"
                       />
                     </div>
                   ))}
 
                   {/* Drawing Logo */}
                   <div className="grid grid-cols-[120px_1fr] items-center gap-[8px] py-[2px]">
-                    <label className="text-[11px] text-[#F5F8FC] truncate">Drawing Logo</label>
+                    <label className="text-[11px] text-[#FFFFFF] truncate">Drawing Logo</label>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
@@ -310,7 +310,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                           if (f) handleLogoFile(f);
                         }}
                         title="Click or drop image for Drawing Logo"
-                        className="w-[38px] h-[38px] bg-[#4E5F79] border border-[#94A3B8] flex items-center justify-center overflow-hidden hover:border-[#F5F8FC] transition-colors cursor-pointer"
+                        className="w-[38px] h-[38px] bg-[#4A525D] border border-[#888888] flex items-center justify-center overflow-hidden hover:border-[#FFFFFF] transition-colors cursor-pointer"
                       >
                         {metadata.drawingLogo ? (
                           <img
@@ -326,7 +326,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                         <button
                           type="button"
                           onClick={() => onUpdateMetadata({ drawingLogo: null })}
-                          className="text-[10px] text-[#B2BECE] hover:text-[#F5F8FC] cursor-pointer"
+                          className="text-[10px] text-[#A3AAB5] hover:text-[#FFFFFF] cursor-pointer"
                         >
                           Clear
                         </button>
@@ -345,21 +345,21 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                   </div>
 
                   <div className="grid grid-cols-[120px_1fr] items-center gap-[8px] min-h-[20px]">
-                    <label className="text-[11px] text-[#F5F8FC] truncate">Drawing Author</label>
+                    <label className="text-[11px] text-[#FFFFFF] truncate">Drawing Author</label>
                     <input
                       type="text"
                       value={metadata.drawingAuthor}
                       onChange={(e) => onUpdateMetadata({ drawingAuthor: e.target.value })}
-                      className="h-[19px] px-[6px] bg-[#172236] border border-[#2A3A54] text-[11px] text-[#F5F8FC] focus:outline-none focus:border-[#A08F52]"
+                      className="h-[19px] px-[6px] bg-[#1B1F25] border border-[#2A2F37] text-[11px] text-[#FFFFFF] focus:outline-none focus:border-[#A08F52]"
                     />
                   </div>
                   <div className="grid grid-cols-[120px_1fr] items-center gap-[8px] min-h-[20px]">
-                    <label className="text-[11px] text-[#F5F8FC] truncate">Drawing Version</label>
+                    <label className="text-[11px] text-[#FFFFFF] truncate">Drawing Version</label>
                     <input
                       type="text"
                       value={metadata.drawingVersion}
                       onChange={(e) => onUpdateMetadata({ drawingVersion: e.target.value })}
-                      className="h-[19px] px-[6px] bg-[#172236] border border-[#2A3A54] text-[11px] text-[#F5F8FC] focus:outline-none focus:border-[#A08F52]"
+                      className="h-[19px] px-[6px] bg-[#1B1F25] border border-[#2A2F37] text-[11px] text-[#FFFFFF] focus:outline-none focus:border-[#A08F52]"
                     />
                   </div>
                 </div>
@@ -392,42 +392,42 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
               {/* Category: Layers */}
               {activeCategory === 'Layers' && (
                 <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between px-2 py-1.5 bg-[#1B2940] border border-[#2A3A54]">
+                  <div className="flex items-center justify-between px-2 py-1.5 bg-[#1E2229] border border-[#2A2F37]">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-semibold text-[#F5F8FC]">
+                      <span className="text-[11px] font-semibold text-[#FFFFFF]">
                         Project Layers ({layers.length})
                       </span>
-                      <span className="text-[10px] text-[#A8B5CB]">
+                      <span className="text-[10px] text-[#9AA1AC]">
                         Plot styling, visibility &amp; lock control
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={() => onAddLayer()}
-                      className="h-[20px] px-2 bg-[#487F28] hover:bg-[#56962E] border border-[#2A3A54] text-[10px] font-medium text-[#F5F8FC] cursor-pointer"
+                      className="h-[20px] px-2 bg-[#487F28] hover:bg-[#56962E] border border-[#2A2F37] text-[10px] font-medium text-[#FFFFFF] cursor-pointer"
                     >
                       + Add Layer
                     </button>
                   </div>
 
                   {layers.length === 0 ? (
-                    <div className="p-3 bg-[#172236] border border-[#2A3A54] text-[10px] text-[#B2BECE] flex flex-col items-start gap-2">
+                    <div className="p-3 bg-[#1B1F25] border border-[#2A2F37] text-[10px] text-[#A3AAB5] flex flex-col items-start gap-2">
                       <div>
-                        No custom layers yet. Layer assignment is optional; objects without a layer render in default Plot ink (`#1D2A41`). Create layers to color-code, style line weights, isolate, or lock groups of items.
+                        No custom layers yet. Layer assignment is optional; objects without a layer render in default Plot ink (`#1F2937`). Create layers to color-code, style line weights, isolate, or lock groups of items.
                       </div>
                       <button
                         type="button"
                         onClick={() => onAddLayer()}
-                        className="px-2.5 py-1 bg-[#364860] hover:bg-[#4E5F79] border border-[#2A3A54] text-[#F5F8FC] text-[10px] cursor-pointer"
+                        className="px-2.5 py-1 bg-[#363C45] hover:bg-[#4A525D] border border-[#2A2F37] text-[#FFFFFF] text-[10px] cursor-pointer"
                       >
                         + Create First Layer
                       </button>
                     </div>
                   ) : (
-                    <div className="border border-[#2A3A54] bg-[#172236] overflow-x-auto capture-scroll">
+                    <div className="border border-[#2A2F37] bg-[#1B1F25] overflow-x-auto capture-scroll">
                       <table className="w-full min-w-[440px] border-collapse text-[10px]">
                         <thead>
-                          <tr className="bg-[#2E333B] border-b border-[#2A3A54] text-left text-[#B2BECE]">
+                          <tr className="bg-[#2E333B] border-b border-[#2A2F37] text-left text-[#A3AAB5]">
                             <th className="px-1.5 py-1 font-normal w-[28px]">Color</th>
                             <th className="px-1.5 py-1 font-normal">Layer Name</th>
                             <th className="px-1.5 py-1 font-normal w-[68px]">Weight</th>
@@ -441,7 +441,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                           {layers.map((layer) => {
                             const memberCount = objects.filter((o) => o.layerId === layer.id).length;
                             return (
-                              <tr key={layer.id} className="border-b border-[#142033] hover:bg-[#263650]">
+                              <tr key={layer.id} className="border-b border-[#191D23] hover:bg-[#272C33]">
                                 <td className="px-1.5 py-1">
                                   <input
                                     type="color"
@@ -450,7 +450,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                                     onChange={(e) =>
                                       onUpdateLayer(layer.id, { color: e.target.value })
                                     }
-                                    className="w-[20px] h-[17px] bg-transparent border border-[#2A3A54] p-0 cursor-pointer block"
+                                    className="w-[20px] h-[17px] bg-transparent border border-[#2A2F37] p-0 cursor-pointer block"
                                   />
                                 </td>
                                 <td className="px-1.5 py-1">
@@ -461,10 +461,10 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                                       onChange={(e) =>
                                         onUpdateLayer(layer.id, { name: e.target.value })
                                       }
-                                      className="flex-1 min-w-[70px] h-[19px] px-1.5 bg-[#23334D] border border-[#2A3A54] text-[11px] text-[#F5F8FC] focus:outline-none focus:border-[#A08F52]"
+                                      className="flex-1 min-w-[70px] h-[19px] px-1.5 bg-[#252A31] border border-[#2A2F37] text-[11px] text-[#FFFFFF] focus:outline-none focus:border-[#A08F52]"
                                     />
                                     <span
-                                      className="text-[9px] text-[#A8B5CB] tabular-nums shrink-0"
+                                      className="text-[9px] text-[#9AA1AC] tabular-nums shrink-0"
                                       title={`${memberCount} object(s) on this layer`}
                                     >
                                       ({memberCount})
@@ -479,7 +479,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                                         lineWeightPt: Number(e.target.value) || 0.75,
                                       })
                                     }
-                                    className="w-full h-[19px] px-1 bg-[#23334D] border border-[#2A3A54] text-[10px] text-[#F5F8FC] tabular-nums"
+                                    className="w-full h-[19px] px-1 bg-[#252A31] border border-[#2A2F37] text-[10px] text-[#FFFFFF] tabular-nums"
                                   >
                                     {[0.25, 0.5, 0.75, 1, 1.25, 1.5, 2].map((w) => (
                                       <option key={w} value={w}>
@@ -496,7 +496,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                                         lineStyle: e.target.value as LayerLineStyle,
                                       })
                                     }
-                                    className="w-full h-[19px] px-1 bg-[#23334D] border border-[#2A3A54] text-[10px] text-[#F5F8FC]"
+                                    className="w-full h-[19px] px-1 bg-[#252A31] border border-[#2A2F37] text-[10px] text-[#FFFFFF]"
                                   >
                                     <option value="Solid">Solid</option>
                                     <option value="Dashed">Dashed</option>
@@ -520,10 +520,10 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                                     onClick={() =>
                                       onUpdateLayer(layer.id, { locked: !layer.locked })
                                     }
-                                    className={`w-full h-[18px] px-1 border border-[#1A2740] text-[9px] cursor-pointer ${
+                                    className={`w-full h-[18px] px-1 border border-[#141414] text-[9px] cursor-pointer ${
                                       layer.locked
                                         ? 'bg-[#6A2824] text-[#FBBF24]'
-                                        : 'bg-[#25344E] text-[#CBD5E1] hover:bg-[#354663]'
+                                        : 'bg-[#262626] text-[#CCCCCC] hover:bg-[#333333]'
                                     }`}
                                   >
                                     {layer.locked ? 'Locked' : 'Normal'}
@@ -534,7 +534,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                                     type="button"
                                     title="Delete layer (objects become unassigned)"
                                     onClick={() => onDeleteLayer(layer.id)}
-                                    className="w-[18px] h-[18px] bg-[#2C1D1D] hover:bg-[#5E2320] border border-[#2A3A54] text-[#FFA9A1] text-[11px] leading-none cursor-pointer"
+                                    className="w-[18px] h-[18px] bg-[#2C1D1D] hover:bg-[#5E2320] border border-[#2A2F37] text-[#FFA9A1] text-[11px] leading-none cursor-pointer"
                                   >
                                     -
                                   </button>
@@ -569,8 +569,8 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                         key={f.id}
                         type="button"
                         onClick={() => setFilterKind(f.id)}
-                        className={`px-2 py-0.5 text-[10px] border border-[#1A2740] cursor-pointer ${
-                          filterKind === f.id ? 'bg-[#857431] text-[#F5F8FC]' : 'bg-[#3A4B68] text-[#CBD5E1]'
+                        className={`px-2 py-0.5 text-[10px] border border-[#141414] cursor-pointer ${
+                          filterKind === f.id ? 'bg-[#857431] text-[#FFFFFF]' : 'bg-[#383838] text-[#CCCCCC]'
                         }`}
                       >
                         {f.label}
@@ -587,14 +587,14 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                           onClick={(e) =>
                             onSelectObject(o.id, e.metaKey || e.ctrlKey ? 'toggle' : 'replace')
                           }
-                          className={`flex items-center justify-between px-2 py-1 text-left border border-[#1A2740] cursor-pointer ${
+                          className={`flex items-center justify-between px-2 py-1 text-left border border-[#141414] cursor-pointer ${
                             selectedSet.has(o.id)
-                              ? 'bg-[#4B1E1B] text-[#F5F8FC]'
-                              : 'bg-[#1B2940] text-[#CBD5E1] hover:bg-[#2F3F5B]'
+                              ? 'bg-[#4B1E1B] text-[#FFFFFF]'
+                              : 'bg-[#1E1E1E] text-[#CCCCCC] hover:bg-[#2E2E2E]'
                           }`}
                         >
                           <span className="truncate">{o.name}</span>
-                          <span className="text-[10px] text-[#A8B5CB] tabular-nums">
+                          <span className="text-[10px] text-[#9AA1AC] tabular-nums">
                             {o.position.map((v) => v.toFixed(1)).join(', ')}
                           </span>
                         </button>
@@ -614,20 +614,20 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                         : 0;
                     const groupColor = members[0]?.color ?? grp.color;
                     return (
-                      <div key={grp.id} className="p-2 bg-[#172236] border border-[#2A3A54] flex flex-col gap-1.5">
+                      <div key={grp.id} className="p-2 bg-[#1B1F25] border border-[#2A2F37] flex flex-col gap-1.5">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-[#F5F8FC]">
+                          <span className="font-medium text-[#FFFFFF]">
                             {grp.name} ({members.length})
                           </span>
                           <input
                             type="color"
                             value={groupColor}
                             onChange={(e) => onUpdateGroupFixtures(grp.id, { color: e.target.value })}
-                            className="w-[20px] h-[16px] bg-transparent border border-[#2A3A54] cursor-pointer"
+                            className="w-[20px] h-[16px] bg-transparent border border-[#2A2F37] cursor-pointer"
                           />
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] text-[#B2BECE]">Dimmer</span>
+                          <span className="text-[10px] text-[#A3AAB5]">Dimmer</span>
                           <input
                             type="range"
                             min={0}
@@ -652,12 +652,12 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
               {/* Category: Camera Positions */}
               {activeCategory === 'Camera Positions' && (
                 <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between text-[10px] text-[#D7E0EE]">
+                  <div className="flex items-center justify-between text-[10px] text-[#D4D9E0]">
                     <span>Apply preset to viewport:</span>
                     <select
                       value={cameraTargetVp}
                       onChange={(e) => setCameraTargetVp(e.target.value as ViewportId)}
-                      className="h-[19px] px-1.5 bg-[#172236] border border-[#2A3A54] text-[#F5F8FC]"
+                      className="h-[19px] px-1.5 bg-[#1B1F25] border border-[#2A2F37] text-[#FFFFFF]"
                     >
                       <option value="alpha">Alpha View</option>
                       <option value="beta">Beta View</option>
@@ -670,9 +670,9 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                         key={preset.id}
                         type="button"
                         onClick={() => onRecallCameraPreset(preset, cameraTargetVp)}
-                        className="flex items-center justify-between px-2 py-1.5 bg-[#172236] border border-[#2A3A54] hover:bg-[#33445F] text-left cursor-pointer"
+                        className="flex items-center justify-between px-2 py-1.5 bg-[#1B1F25] border border-[#2A2F37] hover:bg-[#343A43] text-left cursor-pointer"
                       >
-                        <span className="text-[#F5F8FC]">{preset.name}</span>
+                        <span className="text-[#FFFFFF]">{preset.name}</span>
                         <span className="text-[10px] text-[#83D84C]">{preset.projection}</span>
                       </button>
                     ))}
@@ -688,7 +688,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
           <div className="flex-1 overflow-auto capture-scroll p-2">
             <table className="min-w-[1240px] w-full border-collapse text-[11px] tabular-nums">
               <thead>
-                <tr className="text-left text-[#B2BECE] border-b border-[#2A3A54] bg-[#23334D] sticky top-0 z-10">
+                <tr className="text-left text-[#A3AAB5] border-b border-[#2A2F37] bg-[#252A31] sticky top-0 z-10">
                   {[
                     'Location',
                     'Unit',
@@ -722,17 +722,17 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                   const groupName = fx.groupId
                     ? fixtureGroups.find((g) => g.id === fx.groupId)?.name ?? '—'
                     : '—';
-                  const cellClass = 'py-1 px-1.5 text-[#CBD5E1] whitespace-nowrap';
+                  const cellClass = 'py-1 px-1.5 text-[#CCCCCC] whitespace-nowrap';
                   const inputClass =
-                    'w-full min-w-[54px] bg-transparent border border-transparent hover:border-[#4B5C78] focus:border-[#857431] focus:bg-[#1B2940] outline-none text-[#F5F8FC] px-0.5';
+                    'w-full min-w-[54px] bg-transparent border border-transparent hover:border-[#444] focus:border-[#857431] focus:bg-[#1A1A1A] outline-none text-[#FFFFFF] px-0.5';
                   return (
                     <tr
                       key={fx.id}
                       onClick={(e) =>
                         onSelectObject(fx.id, e.metaKey || e.ctrlKey ? 'toggle' : 'replace')
                       }
-                      className={`border-b border-[#1E2C44] cursor-pointer ${
-                        selected ? 'bg-[#4B1E1B]' : 'hover:bg-[#2F3F5B]'
+                      className={`border-b border-[#1C1C1C] cursor-pointer ${
+                        selected ? 'bg-[#4B1E1B]' : 'hover:bg-[#2E2E2E]'
                       }`}
                     >
                       <td className={cellClass}>
@@ -754,7 +754,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                       </td>
                       <td className={cellClass}>{fx.channel ?? '—'}</td>
                       <td className={cellClass}>{groupName}</td>
-                      <td className={`${cellClass} text-[#F5F8FC]`}>
+                      <td className={`${cellClass} text-[#FFFFFF]`}>
                         <div className="flex items-center gap-1">
                           {fx.kind === 'gdtf-fixture' && (
                             <span className="px-1 bg-[#1D3316] border border-[#5A9E35] text-[9px] text-[#83D84C] shrink-0">
@@ -791,7 +791,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                             }
                             onClick={(e) => e.stopPropagation()}
                             onChange={(e) => onChangeGdtfMode(fx.id, e.target.value)}
-                            className="max-w-[118px] bg-[#172236] border border-[#3B4D69] text-[10px] text-[#F5F8FC] outline-none cursor-pointer"
+                            className="max-w-[118px] bg-[#1B1F25] border border-[#3A414B] text-[10px] text-[#FFFFFF] outline-none cursor-pointer"
                           >
                             {profile.dmxModes.map((m) => (
                               <option key={m.name} value={m.name}>
@@ -862,8 +862,8 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                     key={u}
                     type="button"
                     onClick={() => setSelectedUniverse(u)}
-                    className={`px-2 py-0.5 text-[11px] border border-[#1A2740] cursor-pointer ${
-                      selectedUniverse === u ? 'bg-[#596A85] text-[#F5F8FC]' : 'bg-[#3A4B68] text-[#CBD5E1]'
+                    className={`px-2 py-0.5 text-[11px] border border-[#141414] cursor-pointer ${
+                      selectedUniverse === u ? 'bg-[#545454] text-[#FFFFFF]' : 'bg-[#383838] text-[#CCCCCC]'
                     }`}
                   >
                     Univ {String.fromCharCode(64 + u)} ({u})
@@ -876,13 +876,13 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                   onClick={onToggleDmxSweep}
                   className={`px-2 py-0.5 text-[10px] border cursor-pointer ${
                     dmxSweepActive
-                      ? 'bg-[#3B6E1C] border-[#569A2D] text-[#F5F8FC]'
-                      : 'bg-[#3A4B68] border-[#1A2740] text-[#CBD5E1] hover:bg-[#4A4A4A]'
+                      ? 'bg-[#3B6E1C] border-[#569A2D] text-[#FFFFFF]'
+                      : 'bg-[#383838] border-[#141414] text-[#CCCCCC] hover:bg-[#4A4A4A]'
                   }`}
                 >
                   {dmxSweepActive ? '■ Stop Live DMX Sweep' : '▶ Run Live DMX Sweep'}
                 </button>
-                <span className="text-[10px] text-[#B2BECE] tabular-nums">512 DMX Ch</span>
+                <span className="text-[10px] text-[#A3AAB5] tabular-nums">512 DMX Ch</span>
               </div>
             </div>
 
@@ -920,10 +920,10 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                     }
                     className={`h-[18px] text-[9px] tabular-nums flex items-center justify-center border ${
                       isSelected
-                        ? 'border-[#FF9500] text-[#F5F8FC]'
+                        ? 'border-[#FF9500] text-[#FFFFFF]'
                         : patched
-                          ? 'border-[#1A2740] text-[#F5F8FC]'
-                          : 'border-[#1B2940] bg-[#1B2940] text-[#7A8AA3]'
+                          ? 'border-[#141414] text-[#FFFFFF]'
+                          : 'border-[#1A1A1A] bg-[#1E1E1E] text-[#666666]'
                     } ${patched ? 'cursor-pointer' : 'cursor-default'}`}
                     style={
                       patched
@@ -945,7 +945,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
 
             {/* Live DMX Faders for Patched Smoke Volume */}
             {primaryObj?.kind === 'smoke-volume' && parseSmokePatch(primaryObj.smokePatch).isPatched && (
-              <div className="mt-1 p-2 bg-[#1B2940] border border-[#2A3A54] flex flex-col gap-1.5">
+              <div className="mt-1 p-2 bg-[#1E2229] border border-[#2A2F37] flex flex-col gap-1.5">
                 {(() => {
                   const p = parseSmokePatch(primaryObj.smokePatch);
                   const uBuf = dmxUniverses[p.universe] ?? new Uint8Array(512);
@@ -957,13 +957,13 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                         <span className="text-[#9EC5D6] font-semibold">
                           Live DMX Smoke Binding — {primaryObj.name}
                         </span>
-                        <span className="text-[#A8B5CB] tabular-nums">
+                        <span className="text-[#9AA1AC] tabular-nums">
                           Patch {p.universe}.{String(p.address).padStart(3, '0')}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-3 text-[10px]">
                         <label className="flex items-center gap-2">
-                          <span className="w-[78px] text-[#D7E0EE]">1. Density</span>
+                          <span className="w-[78px] text-[#D4D9E0]">1. Density</span>
                           <input
                             type="range"
                             min={0}
@@ -974,12 +974,12 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                             }
                             className="flex-1 accent-[#6FA8DC]"
                           />
-                          <span className="w-[38px] text-right text-[#A8B5CB] tabular-nums">
+                          <span className="w-[38px] text-right text-[#9AA1AC] tabular-nums">
                             {((rawDensity / 255) * 15).toFixed(1)}%
                           </span>
                         </label>
                         <label className="flex items-center gap-2">
-                          <span className="w-[78px] text-[#D7E0EE]">2. Speed</span>
+                          <span className="w-[78px] text-[#D4D9E0]">2. Speed</span>
                           <input
                             type="range"
                             min={0}
@@ -990,7 +990,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                             }
                             className="flex-1 accent-[#6FA8DC]"
                           />
-                          <span className="w-[38px] text-right text-[#A8B5CB] tabular-nums">
+                          <span className="w-[38px] text-right text-[#9AA1AC] tabular-nums">
                             {Math.round((rawSpeed / 255) * 150)}%
                           </span>
                         </label>
@@ -1003,12 +1003,12 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
 
             {/* Live GDTF DMX Channel Faders for Selected GDTF Fixture */}
             {primaryGdtfMode && primaryObj && (
-              <div className="mt-1 p-2 bg-[#1B2940] border border-[#2A3A54] flex flex-col gap-1.5">
+              <div className="mt-1 p-2 bg-[#1E2229] border border-[#2A2F37] flex flex-col gap-1.5">
                 <div className="flex items-center justify-between text-[10px]">
                   <span className="text-[#83D84C] font-semibold">
                     Live DMX Binding — {primaryObj.name} ({primaryGdtfMode.name})
                   </span>
-                  <span className="text-[#A8B5CB] tabular-nums">
+                  <span className="text-[#9AA1AC] tabular-nums">
                     Patch {primaryObj.dmxUniverse ?? 1}.{String(primaryObj.dmxAddress ?? 1).padStart(3, '0')}
                   </span>
                 </div>
@@ -1020,7 +1020,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                     const raw = readDmxRawValue(uBuf, primaryObj.dmxAddress ?? 1, ch.offset);
                     return (
                       <label key={`${attr}-${idx}`} className="flex items-center gap-2 text-[10px]">
-                        <span className="w-[82px] text-[#D7E0EE] truncate" title={attr}>
+                        <span className="w-[82px] text-[#D4D9E0] truncate" title={attr}>
                           {ch.offset[0]}. {attr}
                         </span>
                         <input
@@ -1039,7 +1039,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                           }
                           className="flex-1 accent-[#83D84C]"
                         />
-                        <span className="w-[38px] text-right text-[#A8B5CB] tabular-nums">
+                        <span className="w-[38px] text-right text-[#9AA1AC] tabular-nums">
                           {Math.round((raw / maxRaw) * 100)}%
                         </span>
                       </label>
@@ -1057,14 +1057,14 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
             <div className="flex items-center justify-between border-b border-[#171B20] pb-2">
               <div>
                 <div className="text-[12px] font-semibold">Project Drawing Logo & Gobos</div>
-                <div className="text-[10px] text-[#B2BECE]">
+                <div className="text-[10px] text-[#A3AAB5]">
                   Assign custom plot branding or optical gobo wheel presets
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => logoInputRef.current?.click()}
-                className="px-2.5 py-1 bg-[#364860] border border-[#2A3A54] hover:bg-[#4E5F79] cursor-pointer"
+                className="px-2.5 py-1 bg-[#363C45] border border-[#2A2F37] hover:bg-[#4A525D] cursor-pointer"
               >
                 Upload Logo
               </button>
@@ -1081,11 +1081,11 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                       { gobo },
                     )
                   }
-                  className={`p-2 bg-[#1B2940] border text-center cursor-pointer ${
-                    primaryObj?.gobo === gobo ? 'border-[#857431]' : 'border-[#1A2740] hover:border-[#5B6B85]'
+                  className={`p-2 bg-[#1E1E1E] border text-center cursor-pointer ${
+                    primaryObj?.gobo === gobo ? 'border-[#857431]' : 'border-[#141414] hover:border-[#555]'
                   }`}
                 >
-                  <div className="w-8 h-8 mx-auto mb-1 rounded-full border border-[#666] bg-[#111] flex items-center justify-center text-[10px] text-[#D7E0EE]">
+                  <div className="w-8 h-8 mx-auto mb-1 rounded-full border border-[#666] bg-[#111] flex items-center justify-center text-[10px] text-[#D4D9E0]">
                     ◎
                   </div>
                   <div className="text-[10px] truncate">{gobo}</div>
@@ -1104,7 +1104,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                 placeholder="New snapshot name..."
                 value={newSnapName}
                 onChange={(e) => setNewSnapName(e.target.value)}
-                className="flex-1 h-[22px] px-2 bg-[#172236] border border-[#2A3A54] text-[11px] focus:outline-none focus:border-[#A08F52]"
+                className="flex-1 h-[22px] px-2 bg-[#1B1F25] border border-[#2A2F37] text-[11px] focus:outline-none focus:border-[#A08F52]"
               />
               <button
                 type="button"
@@ -1112,7 +1112,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
                   onCaptureSnapshot(newSnapName.trim() || `Look ${snapshots.length + 1}`);
                   setNewSnapName('');
                 }}
-                className="h-[22px] px-2.5 bg-[#A08F52] hover:bg-[#B09E5A] text-[#F5F8FC] text-[11px] cursor-pointer"
+                className="h-[22px] px-2.5 bg-[#A08F52] hover:bg-[#B09E5A] text-[#FFFFFF] text-[11px] cursor-pointer"
               >
                 Store Snapshot
               </button>
@@ -1121,16 +1121,16 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
               {snapshots.map((snap) => (
                 <div
                   key={snap.id}
-                  className="flex items-center justify-between px-2.5 py-1.5 bg-[#172236] border border-[#2A3A54]"
+                  className="flex items-center justify-between px-2.5 py-1.5 bg-[#1B1F25] border border-[#2A2F37]"
                 >
                   <div>
-                    <div className="text-[#F5F8FC] font-medium">{snap.name}</div>
-                    <div className="text-[10px] text-[#A8B5CB]">{snap.description}</div>
+                    <div className="text-[#FFFFFF] font-medium">{snap.name}</div>
+                    <div className="text-[10px] text-[#9AA1AC]">{snap.description}</div>
                   </div>
                   <button
                     type="button"
                     onClick={() => onRecallSnapshot(snap.id)}
-                    className="px-2.5 py-1 bg-[#364860] border border-[#2A3A54] hover:bg-[#596A85] text-[11px] cursor-pointer"
+                    className="px-2.5 py-1 bg-[#363C45] border border-[#2A2F37] hover:bg-[#545454] text-[11px] cursor-pointer"
                   >
                     Recall
                   </button>
