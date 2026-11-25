@@ -179,7 +179,7 @@ function inspectSketchUpBinaryHeader(bytes: Uint8Array): {
 }
 
 /**
- * Check for embedded structured Capture SKP JSON/Binary scene payload ("CAPSKP1\0")
+ * Check for embedded structured SKP JSON/Binary scene payload ("CAPSKP1\0")
  * appended inside valid SketchUp-header .skp archives.
  */
 function tryParseEmbeddedSkpScene(bytes: Uint8Array, fileName: string, version: string): SkpParsedModel | null {

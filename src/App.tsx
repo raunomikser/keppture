@@ -78,7 +78,7 @@ async function pickSaveHandle(suggestedName: string): Promise<FileSystemFileHand
   try {
     return await picker({
       suggestedName,
-      types: [{ description: 'Capture Lighting Project', accept: { 'application/x-capture-project+zip': ['.kptr'] } }],
+      types: [{ description: 'Keppture Lighting Project', accept: { 'application/x-capture-project+zip': ['.kptr'] } }],
     });
   } catch {
     return null;
@@ -970,7 +970,7 @@ export default function App() {
   ]);
 
   const handleSaveProjectAs = useCallback(async () => {
-    const fileName = (metadata.project.trim() || 'Capture-Project') + '.kptr';
+    const fileName = (metadata.project.trim() || 'Keppture-Project') + '.kptr';
     persistAutosave(buildDocument());
     try {
       const blob = await exportKptr(buildKptrProject());
@@ -1003,7 +1003,7 @@ export default function App() {
   ]);
 
   const handleExportLegacyJson = useCallback(() => {
-    const fileName = (metadata.project.trim() || 'Capture-Project') + '.json';
+    const fileName = (metadata.project.trim() || 'Keppture-Project') + '.json';
     downloadBlob(
       new Blob([JSON.stringify(buildDocument(), null, 2)], { type: 'application/json' }),
       fileName,
@@ -1122,7 +1122,7 @@ export default function App() {
   );
 
   const handleExportModel = useCallback(() => {
-    const lines = ['# Capture Lighting Visualizer OBJ Export'];
+    const lines = ['# Keppture Lighting Visualizer OBJ Export'];
     let vIdx = 1;
     for (const o of objects) {
       lines.push(`o ${o.name.replace(/\s+/g, '_')}`);
@@ -1145,8 +1145,8 @@ export default function App() {
       lines.push(`f ${vIdx + 4} ${vIdx + 5} ${vIdx + 6} ${vIdx + 7}`);
       vIdx += 8;
     }
-    downloadBlob(new Blob([lines.join('\n')], { type: 'text/plain' }), 'capture-scene.obj');
-    showToast('Exported 3D model "capture-scene.obj"');
+    downloadBlob(new Blob([lines.join('\n')], { type: 'text/plain' }), 'keppture-scene.obj');
+    showToast('Exported 3D model "keppture-scene.obj"');
   }, [objects, showToast]);
 
   const handleExportFixtureData = useCallback(() => {
@@ -1496,7 +1496,7 @@ export default function App() {
           <div className="w-[19px] h-[19px] rounded-[4px] bg-[#7CE043]/15 border border-[#7CE043]/45 flex items-center justify-center">
             <FixtureGroupsIcon className="w-[13px] h-[13px]" />
           </div>
-          <span className="text-[11px] font-semibold tracking-[0.02em] text-[#E5E5E5]">Capture</span>
+          <span className="text-[11px] font-semibold tracking-[0.02em] text-[#E5E5E5]">Keppture</span>
         </div>
 
         <div className="h-[16px] w-px bg-[#3A3A3A] shrink-0" />

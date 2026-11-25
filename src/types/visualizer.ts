@@ -114,7 +114,7 @@ export interface SceneObject {
   weightKg?: number;
   circuit?: string;
   purpose?: string;
-  /** Fixture-table patch location/unit/filter labels (Capture-style columns). */
+  /** Fixture-table patch location/unit/filter labels (schedule-style columns). */
   location?: string;
   unit?: string;
   filter?: string;

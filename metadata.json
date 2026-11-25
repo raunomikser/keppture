@@ -1,5 +1,5 @@
 {
-  "name": "Capture Lighting Visualizer",
+  "name": "Keppture Lighting Visualizer",
   "description": "CAD and 3D stage lighting visualization workspace with synchronized Alpha, Beta, and Gamma orthographic/perspective viewports and project inspector.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

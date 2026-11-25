@@ -1907,7 +1907,7 @@ export const CadViewport: React.FC<CadViewportProps> = ({
       const layer = hitObj ? layersRef.current.find((l) => l.id === hitObj.layerId) : undefined;
 
       // Focus mode: clicking geometry aims the selected fixtures without changing the selection.
-      // Clicking an unselected fixture still selects it, as in the Capture manual.
+      // Clicking an unselected fixture still selects it, as in the reference manual.
       if (focusModeRef.current && hits.length > 0) {
         const clickedFixture = hitObj && FIXTURE_KINDS.has(hitObj.kind);
         if (!clickedFixture || selectedSet.has(hitObj!.id)) {

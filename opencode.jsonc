@@ -3,6 +3,11 @@
   "permissions": [
     {
       "action": "external_directory",
+      "resource": "/private/var/folders/s2/tvfdsdbd50gb_91hsz7qm4000000gn/T/opencode/uploads/**",
+      "effect": "allow"
+    },
+    {
+      "action": "external_directory",
       "resource": "*",
       "effect": "deny"
     }

@@ -18,7 +18,7 @@ import { ProjectDocument } from '../types/visualizer';
 export const KPTR_MIME = 'application/x-capture-project+zip';
 const KPTR_FORMAT = 'kptr';
 const KPTR_VERSION = 1;
-const GENERATOR = 'Capture Lighting Visualizer';
+const GENERATOR = 'Keppture Lighting Visualizer';
 
 /** Complete project state stored in one .kptr container. */
 export interface KptrProject extends ProjectDocument {

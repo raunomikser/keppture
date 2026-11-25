@@ -558,7 +558,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
             }
           }}
         >
-          {/* Built-In Category: Capture tool groups + optional import engines */}
+          {/* Built-In Category: tool groups + optional import engines */}
           {activeCategory === 'Built-In' && (
             <div className="p-2 flex flex-col gap-3">
               {BUILT_IN_GROUPS.map((group) => (
@@ -815,7 +815,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
             </div>
           )}
 
-          {/* Capture Materials Grouped View (Colours, Glossy, Matte, Metallic, Construction) */}
+          {/* Materials Grouped View (Colours, Glossy, Matte, Metallic, Construction) */}
           {activeCategory === 'Materials' && (
             <div className="flex flex-col">
               <div className="px-2.5 py-1 bg-[#1A1A1A] border-b border-[#141414] text-[10px] text-[#999999] flex items-center justify-between">
@@ -825,7 +825,7 @@ export const LibraryBrowser: React.FC<LibraryBrowserProps> = ({
 
               {groupedMaterials.map((group) => (
                 <div key={group.category} className="flex flex-col">
-                  {/* Signature Capture Blue Section Header */}
+                  {/* Signature Blue Section Header */}
                   <div className="sticky top-0 z-10 h-[22px] bg-[#0058D0] border-y border-[#003E96] flex items-center justify-center px-4 shadow-sm">
                     <div className="w-[62%] max-w-[420px] text-center border-b border-white/80 pb-[1px] text-[11px] font-semibold text-[#FFFFFF] leading-none">
                       {group.category}

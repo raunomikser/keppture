@@ -490,7 +490,7 @@ export function LiveControlPane({
         </MiniButton>
       </div>
 
-      {/* Resizing bar from the Capture manual. */}
+      {/* Resizing bar from the reference manual. */}
       <div
         title="Drag to resize control pane"
         onPointerDown={(e) => {

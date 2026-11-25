@@ -683,7 +683,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
           </>
         )}
 
-        {/* Tab: Fixtures — Capture-style fixture schedule columns */}
+        {/* Tab: Fixtures — fixture schedule columns */}
         {activeTab === 'Fixtures' && (
           <div className="flex-1 overflow-auto capture-scroll p-2">
             <table className="min-w-[1240px] w-full border-collapse text-[11px] tabular-nums">
@@ -1140,7 +1140,7 @@ export const ProjectPanel: React.FC<ProjectPanelProps> = ({
           </div>
         )}
 
-        {/* Tab: Library (3-Tier Capture Asset Browser UI) */}
+        {/* Tab: Library (3-Tier Asset Browser UI) */}
         {activeTab === 'Library' && (
           <LibraryBrowser
             gdtfProfiles={gdtfProfiles}
