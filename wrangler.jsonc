@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "keppture",
+  "workers_dev": false,
   "compatibility_date": "2026-11-25",
   "assets": {
     "directory": "./dist"
