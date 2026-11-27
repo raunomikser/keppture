@@ -170,13 +170,18 @@ function createFallbackModelGeometry(modelDef: GdtfModelDef | undefined, node: G
   const h = Math.max(0.04, modelDef?.height ?? 0.18);
   const prim = (modelDef?.primitiveType || node.type).toLowerCase();
 
+  if (prim.includes('yoke')) {
+    // Only the top bridge is a solid part; the twin arms are added separately.
+    return new THREE.BoxGeometry(l, Math.max(0.03, h * 0.14), w);
+  }
+  if (!modelDef && node.type === 'Axis') {
+    // Pan/tilt axes are pivots, not visible boxes.
+    return new THREE.CylinderGeometry(0.022, 0.022, 0.03, 10);
+  }
   if (prim.includes('head') || prim.includes('cylinder') || prim.includes('conventional')) {
     const rTop = Math.min(l, w) * 0.44;
     const rBot = Math.min(l, w) * 0.5;
     return new THREE.CylinderGeometry(rTop, rBot, h, 14);
-  }
-  if (prim.includes('yoke')) {
-    return new THREE.BoxGeometry(l, h, Math.min(w, 0.11));
   }
   return new THREE.BoxGeometry(l, h, w);
 }
@@ -309,23 +314,59 @@ export function assembleGdtfRuntimeGroup(
         ? resolveVfsAsset(profile.id, modelDef.file, ['.gltf', '.glb'])
         : undefined;
 
-      // Build immediate fallback/procedural mesh
+      // Build an immediately visible procedural fixture. GDTF archives from the
+      // public library contain description.xml only, so this fallback is what
+      // users actually see; keep its moving-head silhouette recognisable.
       const placeholderHolder = new THREE.Group();
-      const geo = createFallbackModelGeometry(modelDef, node);
-      const mesh = new THREE.Mesh(geo);
       const isAccent = lowerName.includes('yoke') || lowerName.includes('clamp');
-      applyRenderModeToSubtree(mesh, styleOpts, isSelected, isAccent, castsShadows);
-      placeholderHolder.add(mesh);
+      const prim = (modelDef?.primitiveType || node.type).toLowerCase();
 
-      // For Yoke primitive, add twin side arms cleanly framing the Head
-      if ((modelDef?.primitiveType || '').toLowerCase() === 'yoke' && modelDef) {
-        const armGeo = new THREE.BoxGeometry(0.038, modelDef.height * 0.88, 0.08);
-        const armOffset = Math.max(0.09, modelDef.length * 0.41);
-        for (const sx of [-armOffset, armOffset]) {
-          const arm = new THREE.Mesh(armGeo);
-          arm.position.set(sx, -modelDef.height * 0.44, 0);
-          applyRenderModeToSubtree(arm, styleOpts, isSelected, false, castsShadows);
-          placeholderHolder.add(arm);
+      if (prim.includes('head')) {
+        const headHeight = Math.max(0.12, modelDef?.height ?? 0.28);
+        const headRadius = Math.max(
+          0.06,
+          Math.min(modelDef?.length ?? 0.22, modelDef?.width ?? 0.22) * 0.5,
+        );
+        const barrel = new THREE.Mesh(
+          new THREE.CylinderGeometry(headRadius * 0.92, headRadius, headHeight, 14),
+        );
+        applyRenderModeToSubtree(barrel, styleOpts, isSelected, false, castsShadows);
+        placeholderHolder.add(barrel);
+
+        // Front bezel plus rear heat-sink cap make the tilting optical head
+        // read as a moving head instead of a plain cylinder.
+        const bezel = new THREE.Mesh(
+          new THREE.CylinderGeometry(headRadius * 1.08, headRadius * 0.98, 0.035, 14),
+        );
+        bezel.position.y = -headHeight * 0.46;
+        applyRenderModeToSubtree(bezel, styleOpts, isSelected, true, castsShadows);
+        placeholderHolder.add(bezel);
+
+        const cap = new THREE.Mesh(
+          new THREE.CylinderGeometry(headRadius * 0.72, headRadius * 0.86, 0.045, 14),
+        );
+        cap.position.y = headHeight * 0.5;
+        applyRenderModeToSubtree(cap, styleOpts, isSelected, true, castsShadows);
+        placeholderHolder.add(cap);
+      } else {
+        const mesh = new THREE.Mesh(createFallbackModelGeometry(modelDef, node));
+        applyRenderModeToSubtree(mesh, styleOpts, isSelected, isAccent, castsShadows);
+        placeholderHolder.add(mesh);
+
+        // A GDTF yoke is a bridge with two side arms, never a solid slab.
+        if (prim.includes('yoke') && modelDef) {
+          const armGeo = new THREE.BoxGeometry(
+            Math.max(0.03, modelDef.length * 0.1),
+            modelDef.height * 0.92,
+            Math.max(0.04, modelDef.width * 0.72),
+          );
+          const armOffset = Math.max(0.09, modelDef.length * 0.42);
+          for (const sx of [-armOffset, armOffset]) {
+            const arm = new THREE.Mesh(armGeo);
+            arm.position.set(sx, -modelDef.height * 0.46, 0);
+            applyRenderModeToSubtree(arm, styleOpts, isSelected, false, castsShadows);
+            placeholderHolder.add(arm);
+          }
         }
       }
 
@@ -383,6 +424,14 @@ export function assembleGdtfRuntimeGroup(
       const lensMesh = new THREE.Mesh(lensGeo, lensMat);
       lensMesh.rotation.x = Math.PI / 2;
       group.add(lensMesh);
+
+      // A thin metal ring frames the emitter like a real moving-head lens.
+      const lensBezel = new THREE.Mesh(
+        new THREE.TorusGeometry(lensRadius * 1.12, Math.max(0.008, lensRadius * 0.13), 8, 20),
+      );
+      lensBezel.rotation.x = Math.PI / 2;
+      applyRenderModeToSubtree(lensBezel, styleOpts, isSelected, true, castsShadows);
+      group.add(lensBezel);
 
       const beamAnchor = new THREE.Group();
       group.add(beamAnchor);

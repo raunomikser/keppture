@@ -87,6 +87,52 @@ export function parseGdtfMatrix(posStr: string | null): number[] {
   return mat.elements.slice();
 }
 
+/**
+ * GDTF fixtures describe hanging depth along -Z, while the viewport uses
+ * Three.js Y-up with beams travelling along -Y. Detect real GDTF files that
+ * use Z-down and rotate their geometry basis by -90° about X so yokes, heads
+ * and beams line up with the rest of the scene.
+ *
+ * Older hand-written sample profiles used Y-down directly, so conversion is
+ * applied only when the hierarchy clearly uses Z as its hanging axis.
+ */
+const GDTF_TO_THREE_BASIS = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
+const THREE_TO_GDTF_BASIS = new THREE.Matrix4().makeRotationX(Math.PI / 2);
+
+function geometryUsesGdtfZDown(nodes: GdtfGeometryNode[]): boolean {
+  let ySum = 0;
+  let zSum = 0;
+  let count = 0;
+
+  const walk = (list: GdtfGeometryNode[], depth: number) => {
+    for (const node of list) {
+      if (depth > 0) {
+        const pos = new THREE.Vector3().setFromMatrixPosition(
+          new THREE.Matrix4().fromArray(node.matrix),
+        );
+        ySum += Math.abs(pos.y);
+        zSum += Math.abs(pos.z);
+        count += 1;
+      }
+      walk(node.children, depth + 1);
+    }
+  };
+  walk(nodes, 0);
+
+  return count > 0 && zSum > ySum * 1.5;
+}
+
+function convertGeometryBasis(nodes: GdtfGeometryNode[]): void {
+  for (const node of nodes) {
+    const converted = new THREE.Matrix4()
+      .fromArray(node.matrix)
+      .premultiply(GDTF_TO_THREE_BASIS)
+      .multiply(THREE_TO_GDTF_BASIS);
+    node.matrix = Array.from(converted.elements);
+    convertGeometryBasis(node.children);
+  }
+}
+
 const GEOMETRY_TAG_TYPES = new Set<GdtfGeometryType>([
   'Geometry',
   'Axis',
@@ -268,6 +314,9 @@ export function parseGdtfDescriptionXml(
         geometries.push(parseGeometryElement(child));
       }
     }
+  }
+  if (geometryUsesGdtfZDown(geometries)) {
+    convertGeometryBasis(geometries);
   }
 
   // D. DMX Modes & Channel Footprints
